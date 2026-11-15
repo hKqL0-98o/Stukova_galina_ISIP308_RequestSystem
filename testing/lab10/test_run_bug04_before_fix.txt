@@ -1,0 +1,26 @@
+# Регрессионный тест BUG-04 на коде ДО исправления (ожидаемо падает)
+# Команда: python -m pytest -k bug04
+# Дата: 2026-11-15 16:12
+============================= test session starts =============================
+platform win32 -- Python 3.14.0, pytest-9.2.0, pluggy-1.7.0 -- C:\Users\User\AppData\Local\Programs\Python\Python314\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\User\Documents\GitHub\Stukova_galina_ISIP308_RequestSystem
+configfile: pytest.ini
+testpaths: testing/lab10
+collecting ... collected 113 items / 112 deselected / 1 selected
+
+testing/lab10/test_regression.py::test_bug04_status_form_has_no_default_transition FAILED [100%]
+
+================================== FAILURES ===================================
+______________ test_bug04_status_form_has_no_default_transition _______________
+testing\lab10\test_regression.py:84: in test_bug04_status_form_has_no_default_transition
+    assert re.search(r'<option value=""\s+selected\s+disabled>', select), select
+E   AssertionError: <select id="status_id" name="status_id">
+E                             <option value="1">Новая</option><option value="3">Выполнена</option>
+E                         </select>
+E   assert None
+E    +  where None = <function search at 0x000001CBF0A33D70>('<option value=""\\s+selected\\s+disabled>', '<select id="status_id" name="status_id">\n                        <option value="1">Новая</option><option value="3">Выполнена</option>\n                    </select>')
+E    +    where <function search at 0x000001CBF0A33D70> = re.search
+=========================== short test summary info ===========================
+FAILED testing/lab10/test_regression.py::test_bug04_status_form_has_no_default_transition
+====================== 1 failed, 112 deselected in 0.34s ======================
