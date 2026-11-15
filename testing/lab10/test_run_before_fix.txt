@@ -1,0 +1,592 @@
+﻿============================= test session starts =============================
+platform win32 -- Python 3.14.0, pytest-9.2.0, pluggy-1.7.0
+rootdir: C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem
+configfile: pytest.ini
+testpaths: testing/lab10
+collected 112 items
+
+testing\lab10\test_api.py .....................F...                      [ 22%]
+testing\lab10\test_business_logic.py ........................            [ 43%]
+testing\lab10\test_regression.py FFFFFFFFFFFFFFFF.FFFFFF.                [ 65%]
+testing\lab10\test_validation.py ............................            [ 90%]
+testing\lab10\test_web_integration.py ..........F                        [100%]
+
+================================== FAILURES ===================================
+_ test_strange_identifiers_give_404[/api/requests/10000000000000000000000000] _
+testing\lab10\test_api.py:152: in test_strange_identifiers_give_404
+    assert_error(client.get(path, headers=auth("admin")), 404, "not_found")
+testing\lab10\test_api.py:11: in assert_error
+    assert response.status_code == status
+E   assert 500 == 404
+E    +  where 500 = <WrapperTestResponse streamed [500 INTERNAL SERVER ERROR]>.status_code
+------------------------------ Captured log call ------------------------------
+ERROR    app:app.py:83 Непредвиденная ошибка
+Traceback (most recent call last):
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\api.py", line 39, in get_request
+    return jsonify(services.get_request_details(g.user, request_id))
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\services.py", line 216, in get_request_details
+    req = get_request(user, request_id)
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\services.py", line 207, in get_request
+    req = repo.get_request(request_id)
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\repositories.py", line 63, in get_request
+    return _one(_REQUEST_SELECT + " WHERE r.id = ?", (request_id,))
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\repositories.py", line 29, in _one
+    row = get_db().execute(sql, params).fetchone()
+          ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+OverflowError: Python int too large to convert to SQLite INTEGER
+_ test_bug01_huge_identifier_does_not_cause_500[get-/api/requests/10000000000000000000000000-None] _
+testing\lab10\test_regression.py:28: in test_bug01_huge_identifier_does_not_cause_500
+    assert response.status_code in (404, 422), response.get_data(as_text=True)
+E   AssertionError: {"error":{"code":"internal_error","message":"Внутренняя ошибка сервера","details":{}}}
+E     
+E   assert 500 in (404, 422)
+E    +  where 500 = <WrapperTestResponse streamed [500 INTERNAL SERVER ERROR]>.status_code
+------------------------------ Captured log call ------------------------------
+ERROR    app:app.py:83 Непредвиденная ошибка
+Traceback (most recent call last):
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\api.py", line 39, in get_request
+    return jsonify(services.get_request_details(g.user, request_id))
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\services.py", line 216, in get_request_details
+    req = get_request(user, request_id)
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\services.py", line 207, in get_request
+    req = repo.get_request(request_id)
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\repositories.py", line 63, in get_request
+    return _one(_REQUEST_SELECT + " WHERE r.id = ?", (request_id,))
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\repositories.py", line 29, in _one
+    row = get_db().execute(sql, params).fetchone()
+          ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+OverflowError: Python int too large to convert to SQLite INTEGER
+_ test_bug01_huge_identifier_does_not_cause_500[delete-/api/requests/10000000000000000000000000-None] _
+testing\lab10\test_regression.py:28: in test_bug01_huge_identifier_does_not_cause_500
+    assert response.status_code in (404, 422), response.get_data(as_text=True)
+E   AssertionError: {"error":{"code":"internal_error","message":"Внутренняя ошибка сервера","details":{}}}
+E     
+E   assert 500 in (404, 422)
+E    +  where 500 = <WrapperTestResponse streamed [500 INTERNAL SERVER ERROR]>.status_code
+------------------------------ Captured log call ------------------------------
+ERROR    app:app.py:83 Непредвиденная ошибка
+Traceback (most recent call last):
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\api.py", line 58, in delete_request
+    services.delete_request(g.user, request_id)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\services.py", line 316, in delete_request
+    if repo.get_request(request_id) is None:
+       ~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\repositories.py", line 63, in get_request
+    return _one(_REQUEST_SELECT + " WHERE r.id = ?", (request_id,))
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\repositories.py", line 29, in _one
+    row = get_db().execute(sql, params).fetchone()
+          ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+OverflowError: Python int too large to convert to SQLite INTEGER
+_ test_bug01_huge_identifier_does_not_cause_500[get-/api/requests/10000000000000000000000000/comments-None] _
+testing\lab10\test_regression.py:28: in test_bug01_huge_identifier_does_not_cause_500
+    assert response.status_code in (404, 422), response.get_data(as_text=True)
+E   AssertionError: {"error":{"code":"internal_error","message":"Внутренняя ошибка сервера","details":{}}}
+E     
+E   assert 500 in (404, 422)
+E    +  where 500 = <WrapperTestResponse streamed [500 INTERNAL SERVER ERROR]>.status_code
+------------------------------ Captured log call ------------------------------
+ERROR    app:app.py:83 Непредвиденная ошибка
+Traceback (most recent call last):
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\api.py", line 66, in list_comments
+    return jsonify(services.list_comments(g.user, request_id))
+                   ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\services.py", line 327, in list_comments
+    get_request(user, request_id)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\services.py", line 207, in get_request
+    req = repo.get_request(request_id)
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\repositories.py", line 63, in get_request
+    return _one(_REQUEST_SELECT + " WHERE r.id = ?", (request_id,))
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\repositories.py", line 29, in _one
+    row = get_db().execute(sql, params).fetchone()
+          ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+OverflowError: Python int too large to convert to SQLite INTEGER
+_ test_bug01_huge_identifier_does_not_cause_500[get-/api/requests?status_id=10000000000000000000000000-None] _
+testing\lab10\test_regression.py:28: in test_bug01_huge_identifier_does_not_cause_500
+    assert response.status_code in (404, 422), response.get_data(as_text=True)
+E   AssertionError: {"error":{"code":"internal_error","message":"Внутренняя ошибка сервера","details":{}}}
+E     
+E   assert 500 in (404, 422)
+E    +  where 500 = <WrapperTestResponse streamed [500 INTERNAL SERVER ERROR]>.status_code
+------------------------------ Captured log call ------------------------------
+ERROR    app:app.py:83 Непредвиденная ошибка
+Traceback (most recent call last):
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\api.py", line 34, in list_requests
+    return jsonify(services.list_requests(g.user, request.args.to_dict()))
+                   ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\services.py", line 203, in list_requests
+    return repo.find_requests(**criteria)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\repositories.py", line 59, in find_requests
+    return _all(sql, params)
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\repositories.py", line 25, in _all
+    return [dict(row) for row in get_db().execute(sql, params).fetchall()]
+                                 ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+OverflowError: Python int too large to convert to SQLite INTEGER
+_ test_bug01_huge_identifier_does_not_cause_500[get-/api/requests?category_id=10000000000000000000000000-None] _
+testing\lab10\test_regression.py:28: in test_bug01_huge_identifier_does_not_cause_500
+    assert response.status_code in (404, 422), response.get_data(as_text=True)
+E   AssertionError: {"error":{"code":"internal_error","message":"Внутренняя ошибка сервера","details":{}}}
+E     
+E   assert 500 in (404, 422)
+E    +  where 500 = <WrapperTestResponse streamed [500 INTERNAL SERVER ERROR]>.status_code
+------------------------------ Captured log call ------------------------------
+ERROR    app:app.py:83 Непредвиденная ошибка
+Traceback (most recent call last):
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\api.py", line 34, in list_requests
+    return jsonify(services.list_requests(g.user, request.args.to_dict()))
+                   ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\services.py", line 203, in list_requests
+    return repo.find_requests(**criteria)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\repositories.py", line 59, in find_requests
+    return _all(sql, params)
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\repositories.py", line 25, in _all
+    return [dict(row) for row in get_db().execute(sql, params).fetchall()]
+                                 ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+OverflowError: Python int too large to convert to SQLite INTEGER
+_ test_bug01_huge_identifier_does_not_cause_500[get-/api/requests?executor_id=10000000000000000000000000-None] _
+testing\lab10\test_regression.py:28: in test_bug01_huge_identifier_does_not_cause_500
+    assert response.status_code in (404, 422), response.get_data(as_text=True)
+E   AssertionError: {"error":{"code":"internal_error","message":"Внутренняя ошибка сервера","details":{}}}
+E     
+E   assert 500 in (404, 422)
+E    +  where 500 = <WrapperTestResponse streamed [500 INTERNAL SERVER ERROR]>.status_code
+------------------------------ Captured log call ------------------------------
+ERROR    app:app.py:83 Непредвиденная ошибка
+Traceback (most recent call last):
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\api.py", line 34, in list_requests
+    return jsonify(services.list_requests(g.user, request.args.to_dict()))
+                   ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\services.py", line 203, in list_requests
+    return repo.find_requests(**criteria)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\repositories.py", line 59, in find_requests
+    return _all(sql, params)
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\repositories.py", line 25, in _all
+    return [dict(row) for row in get_db().execute(sql, params).fetchall()]
+                                 ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+OverflowError: Python int too large to convert to SQLite INTEGER
+_ test_bug01_huge_identifier_does_not_cause_500[post-/api/requests-payload6] __
+testing\lab10\test_regression.py:28: in test_bug01_huge_identifier_does_not_cause_500
+    assert response.status_code in (404, 422), response.get_data(as_text=True)
+E   AssertionError: {"error":{"code":"internal_error","message":"Внутренняя ошибка сервера","details":{}}}
+E     
+E   assert 500 in (404, 422)
+E    +  where 500 = <WrapperTestResponse streamed [500 INTERNAL SERVER ERROR]>.status_code
+------------------------------ Captured log call ------------------------------
+ERROR    app:app.py:83 Непредвиденная ошибка
+Traceback (most recent call last):
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\api.py", line 44, in create_request
+    created = services.create_request(g.user, _json_body())
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\services.py", line 228, in create_request
+    category = _get_category(data.get("category_id"))
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\services.py", line 102, in _get_category
+    category = repo.get_category(category_id)
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\repositories.py", line 109, in get_category
+    return _one("SELECT id, name, description FROM Categories WHERE id = ?", (category_id,))
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\repositories.py", line 29, in _one
+    row = get_db().execute(sql, params).fetchone()
+          ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+OverflowError: Python int too large to convert to SQLite INTEGER
+_ test_bug01_huge_identifier_does_not_cause_500[post-/api/requests-payload7] __
+testing\lab10\test_regression.py:28: in test_bug01_huge_identifier_does_not_cause_500
+    assert response.status_code in (404, 422), response.get_data(as_text=True)
+E   AssertionError: {"error":{"code":"internal_error","message":"Внутренняя ошибка сервера","details":{}}}
+E     
+E   assert 500 in (404, 422)
+E    +  where 500 = <WrapperTestResponse streamed [500 INTERNAL SERVER ERROR]>.status_code
+------------------------------ Captured log call ------------------------------
+ERROR    app:app.py:83 Непредвиденная ошибка
+Traceback (most recent call last):
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\api.py", line 44, in create_request
+    created = services.create_request(g.user, _json_body())
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\services.py", line 237, in create_request
+    applicant_id = _get_active_user_with_role(data.get("applicant_id"), "applicant_id", APPLICANT)["id"]
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\services.py", line 110, in _get_active_user_with_role
+    user = repo.get_user(user_id)
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\repositories.py", line 126, in get_user
+    return _one(f"SELECT {_USER_COLUMNS} FROM Users WHERE id = ?", (user_id,))
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\repositories.py", line 29, in _one
+    row = get_db().execute(sql, params).fetchone()
+          ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+OverflowError: Python int too large to convert to SQLite INTEGER
+_ test_bug01_huge_identifier_does_not_cause_500[post-/api/requests-payload8] __
+testing\lab10\test_regression.py:28: in test_bug01_huge_identifier_does_not_cause_500
+    assert response.status_code in (404, 422), response.get_data(as_text=True)
+E   AssertionError: {"error":{"code":"internal_error","message":"Внутренняя ошибка сервера","details":{}}}
+E     
+E   assert 500 in (404, 422)
+E    +  where 500 = <WrapperTestResponse streamed [500 INTERNAL SERVER ERROR]>.status_code
+------------------------------ Captured log call ------------------------------
+ERROR    app:app.py:83 Непредвиденная ошибка
+Traceback (most recent call last):
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\api.py", line 44, in create_request
+    created = services.create_request(g.user, _json_body())
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\services.py", line 228, in create_request
+    category = _get_category(data.get("category_id"))
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\services.py", line 101, in _get_category
+    category_id = _parse_id(value, "category_id")
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\services.py", line 69, in _parse_id
+    if text.isascii() and text.isdigit() and int(text) > 0:
+                                             ~~~^^^^^^
+ValueError: Exceeds the limit (4300 digits) for integer string conversion: value has 5000 digits; use sys.set_int_max_str_digits() to increase the limit
+_ test_bug01_huge_identifier_does_not_cause_500[patch-/api/requests/1-payload9] _
+testing\lab10\test_regression.py:28: in test_bug01_huge_identifier_does_not_cause_500
+    assert response.status_code in (404, 422), response.get_data(as_text=True)
+E   AssertionError: {"error":{"code":"internal_error","message":"Внутренняя ошибка сервера","details":{}}}
+E     
+E   assert 500 in (404, 422)
+E    +  where 500 = <WrapperTestResponse streamed [500 INTERNAL SERVER ERROR]>.status_code
+------------------------------ Captured log call ------------------------------
+ERROR    app:app.py:83 Непредвиденная ошибка
+Traceback (most recent call last):
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\api.py", line 53, in update_request
+    return jsonify(services.update_request(g.user, request_id, _json_body()))
+                   ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\services.py", line 292, in update_request
+    status = repo.get_status(status_id)
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\repositories.py", line 97, in get_status
+    return _one("SELECT id, name FROM Statuses WHERE id = ?", (status_id,))
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\repositories.py", line 29, in _one
+    row = get_db().execute(sql, params).fetchone()
+          ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+OverflowError: Python int too large to convert to SQLite INTEGER
+_ test_bug01_huge_identifier_does_not_cause_500[patch-/api/requests/1-payload10] _
+testing\lab10\test_regression.py:28: in test_bug01_huge_identifier_does_not_cause_500
+    assert response.status_code in (404, 422), response.get_data(as_text=True)
+E   AssertionError: {"error":{"code":"internal_error","message":"Внутренняя ошибка сервера","details":{}}}
+E     
+E   assert 500 in (404, 422)
+E    +  where 500 = <WrapperTestResponse streamed [500 INTERNAL SERVER ERROR]>.status_code
+------------------------------ Captured log call ------------------------------
+ERROR    app:app.py:83 Непредвиденная ошибка
+Traceback (most recent call last):
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\api.py", line 53, in update_request
+    return jsonify(services.update_request(g.user, request_id, _json_body()))
+                   ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\services.py", line 282, in update_request
+    executor = _get_active_user_with_role(data["executor_id"], "executor_id", EXECUTOR)
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\services.py", line 110, in _get_active_user_with_role
+    user = repo.get_user(user_id)
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\repositories.py", line 126, in get_user
+    return _one(f"SELECT {_USER_COLUMNS} FROM Users WHERE id = ?", (user_id,))
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\repositories.py", line 29, in _one
+    row = get_db().execute(sql, params).fetchone()
+          ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+OverflowError: Python int too large to convert to SQLite INTEGER
+_ test_bug01_huge_identifier_does_not_cause_500[patch-/api/requests/1-payload11] _
+testing\lab10\test_regression.py:28: in test_bug01_huge_identifier_does_not_cause_500
+    assert response.status_code in (404, 422), response.get_data(as_text=True)
+E   AssertionError: {"error":{"code":"internal_error","message":"Внутренняя ошибка сервера","details":{}}}
+E     
+E   assert 500 in (404, 422)
+E    +  where 500 = <WrapperTestResponse streamed [500 INTERNAL SERVER ERROR]>.status_code
+------------------------------ Captured log call ------------------------------
+ERROR    app:app.py:83 Непредвиденная ошибка
+Traceback (most recent call last):
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\api.py", line 53, in update_request
+    return jsonify(services.update_request(g.user, request_id, _json_body()))
+                   ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\services.py", line 266, in update_request
+    changes["category_id"] = _get_category(data["category_id"])["id"]
+                             ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\services.py", line 102, in _get_category
+    category = repo.get_category(category_id)
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\repositories.py", line 109, in get_category
+    return _one("SELECT id, name, description FROM Categories WHERE id = ?", (category_id,))
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\repositories.py", line 29, in _one
+    row = get_db().execute(sql, params).fetchone()
+          ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+OverflowError: Python int too large to convert to SQLite INTEGER
+__ test_bug02_search_by_long_number_returns_empty_list[9999999999999999999] ___
+testing\lab10\test_regression.py:36: in test_bug02_search_by_long_number_returns_empty_list
+    assert response.status_code == 200 and response.get_json() == []
+E   assert (500 == 200)
+E    +  where 500 = <WrapperTestResponse streamed [500 INTERNAL SERVER ERROR]>.status_code
+------------------------------ Captured log call ------------------------------
+ERROR    app:app.py:83 Непредвиденная ошибка
+Traceback (most recent call last):
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\api.py", line 34, in list_requests
+    return jsonify(services.list_requests(g.user, request.args.to_dict()))
+                   ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\services.py", line 203, in list_requests
+    return repo.find_requests(**criteria)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\repositories.py", line 59, in find_requests
+    return _all(sql, params)
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\repositories.py", line 25, in _all
+    return [dict(row) for row in get_db().execute(sql, params).fetchall()]
+                                 ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+OverflowError: Python int too large to convert to SQLite INTEGER
+__ test_bug02_search_by_long_number_returns_empty_list[99999999999999999999] __
+testing\lab10\test_regression.py:36: in test_bug02_search_by_long_number_returns_empty_list
+    assert response.status_code == 200 and response.get_json() == []
+E   assert (500 == 200)
+E    +  where 500 = <WrapperTestResponse streamed [500 INTERNAL SERVER ERROR]>.status_code
+------------------------------ Captured log call ------------------------------
+ERROR    app:app.py:83 Непредвиденная ошибка
+Traceback (most recent call last):
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\api.py", line 34, in list_requests
+    return jsonify(services.list_requests(g.user, request.args.to_dict()))
+                   ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\services.py", line 203, in list_requests
+    return repo.find_requests(**criteria)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\repositories.py", line 59, in find_requests
+    return _all(sql, params)
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\repositories.py", line 25, in _all
+    return [dict(row) for row in get_db().execute(sql, params).fetchall()]
+                                 ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+OverflowError: Python int too large to convert to SQLite INTEGER
+_ test_bug02_search_by_long_number_returns_empty_list[#999999999999999999999999999999] _
+testing\lab10\test_regression.py:36: in test_bug02_search_by_long_number_returns_empty_list
+    assert response.status_code == 200 and response.get_json() == []
+E   assert (500 == 200)
+E    +  where 500 = <WrapperTestResponse streamed [500 INTERNAL SERVER ERROR]>.status_code
+------------------------------ Captured log call ------------------------------
+ERROR    app:app.py:83 Непредвиденная ошибка
+Traceback (most recent call last):
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\api.py", line 34, in list_requests
+    return jsonify(services.list_requests(g.user, request.args.to_dict()))
+                   ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\services.py", line 203, in list_requests
+    return repo.find_requests(**criteria)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\repositories.py", line 59, in find_requests
+    return _all(sql, params)
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\repositories.py", line 25, in _all
+    return [dict(row) for row in get_db().execute(sql, params).fetchall()]
+                                 ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+OverflowError: Python int too large to convert to SQLite INTEGER
+_________ test_bug02_search_by_long_number_returns_empty_list[query3] _________
+testing\lab10\test_regression.py:36: in test_bug02_search_by_long_number_returns_empty_list
+    assert response.status_code == 200 and response.get_json() == []
+E   assert (500 == 200)
+E    +  where 500 = <WrapperTestResponse streamed [500 INTERNAL SERVER ERROR]>.status_code
+------------------------------ Captured log call ------------------------------
+ERROR    app:app.py:83 Непредвиденная ошибка
+Traceback (most recent call last):
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\api.py", line 34, in list_requests
+    return jsonify(services.list_requests(g.user, request.args.to_dict()))
+                   ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\services.py", line 203, in list_requests
+    return repo.find_requests(**criteria)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\repositories.py", line 59, in find_requests
+    return _all(sql, params)
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\repositories.py", line 25, in _all
+    return [dict(row) for row in get_db().execute(sql, params).fetchall()]
+                                 ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+OverflowError: Python int too large to convert to SQLite INTEGER
+___________ test_bug03_control_characters_are_rejected[\x00-title] ____________
+testing\lab10\test_regression.py:51: in test_bug03_control_characters_are_rejected
+    assert response.status_code == 422
+E   assert 500 == 422
+E    +  where 500 = <WrapperTestResponse streamed [500 INTERNAL SERVER ERROR]>.status_code
+------------------------------ Captured log call ------------------------------
+ERROR    app:app.py:75 Ошибка базы данных
+Traceback (most recent call last):
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\api.py", line 44, in create_request
+    created = services.create_request(g.user, _json_body())
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\services.py", line 240, in create_request
+    new_id = repo.insert_request(title, description, category["id"], priority,
+                                 repo.get_status_by_name(NEW)["id"], applicant_id)
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\repositories.py", line 67, in insert_request
+    cur = get_db().execute(
+        """INSERT INTO Requests (title, description, category_id, priority, status_id, applicant_id)
+           VALUES (?, ?, ?, ?, ?, ?)""",
+        (title, description, category_id, priority, status_id, applicant_id),
+    )
+sqlite3.IntegrityError: CHECK constraint failed: length(title) BETWEEN 3 AND 100
+________ test_bug03_control_characters_are_rejected[\x00-description] _________
+testing\lab10\test_regression.py:51: in test_bug03_control_characters_are_rejected
+    assert response.status_code == 422
+E   assert 201 == 422
+E    +  where 201 = <WrapperTestResponse streamed [201 CREATED]>.status_code
+___________ test_bug03_control_characters_are_rejected[\x07-title] ____________
+testing\lab10\test_regression.py:51: in test_bug03_control_characters_are_rejected
+    assert response.status_code == 422
+E   assert 201 == 422
+E    +  where 201 = <WrapperTestResponse streamed [201 CREATED]>.status_code
+________ test_bug03_control_characters_are_rejected[\x07-description] _________
+testing\lab10\test_regression.py:51: in test_bug03_control_characters_are_rejected
+    assert response.status_code == 422
+E   assert 201 == 422
+E    +  where 201 = <WrapperTestResponse streamed [201 CREATED]>.status_code
+_____________ test_bug03_control_character_in_comment_is_rejected _____________
+testing\lab10\test_regression.py:58: in test_bug03_control_character_in_comment_is_rejected
+    assert response.status_code == 422
+E   assert 201 == 422
+E    +  where 201 = <WrapperTestResponse streamed [201 CREATED]>.status_code
+________________ test_bug03_failed_request_leaves_db_unchanged ________________
+testing\lab10\test_regression.py:66: in test_bug03_failed_request_leaves_db_unchanged
+    assert db.execute("SELECT COUNT(*) FROM Comments").fetchone()[0] == 3
+E   assert 4 == 3
+------------------------------ Captured log call ------------------------------
+ERROR    app:app.py:75 Ошибка базы данных
+Traceback (most recent call last):
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\api.py", line 44, in create_request
+    created = services.create_request(g.user, _json_body())
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\services.py", line 240, in create_request
+    new_id = repo.insert_request(title, description, category["id"], priority,
+                                 repo.get_status_by_name(NEW)["id"], applicant_id)
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\repositories.py", line 67, in insert_request
+    cur = get_db().execute(
+        """INSERT INTO Requests (title, description, category_id, priority, status_id, applicant_id)
+           VALUES (?, ?, ?, ?, ?, ?)""",
+        (title, description, category_id, priority, status_id, applicant_id),
+    )
+sqlite3.IntegrityError: CHECK constraint failed: length(title) BETWEEN 3 AND 100
+__________________ test_web_page_for_huge_identifier_is_404 ___________________
+testing\lab10\test_web_integration.py:92: in test_web_page_for_huge_identifier_is_404
+    assert client.get(f"/requests/{BIG_ID}").status_code == 404
+E   AssertionError: assert 500 == 404
+E    +  where 500 = <WrapperTestResponse streamed [500 INTERNAL SERVER ERROR]>.status_code
+E    +    where <WrapperTestResponse streamed [500 INTERNAL SERVER ERROR]> = get('/requests/10000000000000000000000000')
+E    +      where get = <FlaskClient <Flask 'app'>>.get
+------------------------------ Captured log call ------------------------------
+ERROR    app:app.py:83 Непредвиденная ошибка
+Traceback (most recent call last):
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\User\AppData\Local\Programs\Python\Python314\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\web.py", line 153, in request_detail
+    details = services.get_request_details(g.user, request_id)
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\services.py", line 216, in get_request_details
+    req = get_request(user, request_id)
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\services.py", line 207, in get_request
+    req = repo.get_request(request_id)
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\repositories.py", line 63, in get_request
+    return _one(_REQUEST_SELECT + " WHERE r.id = ?", (request_id,))
+  File "C:\Users\User\AppData\Local\Temp\chatbox-sandbox\c25b46ed-1262-4eb1-b8f2-d49fe92af22c\work\RequestSystem\src\repositories.py", line 29, in _one
+    row = get_db().execute(sql, params).fetchone()
+          ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+OverflowError: Python int too large to convert to SQLite INTEGER
+=========================== short test summary info ===========================
+FAILED testing/lab10/test_api.py::test_strange_identifiers_give_404[/api/requests/10000000000000000000000000]
+FAILED testing/lab10/test_regression.py::test_bug01_huge_identifier_does_not_cause_500[get-/api/requests/10000000000000000000000000-None]
+FAILED testing/lab10/test_regression.py::test_bug01_huge_identifier_does_not_cause_500[delete-/api/requests/10000000000000000000000000-None]
+FAILED testing/lab10/test_regression.py::test_bug01_huge_identifier_does_not_cause_500[get-/api/requests/10000000000000000000000000/comments-None]
+FAILED testing/lab10/test_regression.py::test_bug01_huge_identifier_does_not_cause_500[get-/api/requests?status_id=10000000000000000000000000-None]
+FAILED testing/lab10/test_regression.py::test_bug01_huge_identifier_does_not_cause_500[get-/api/requests?category_id=10000000000000000000000000-None]
+FAILED testing/lab10/test_regression.py::test_bug01_huge_identifier_does_not_cause_500[get-/api/requests?executor_id=10000000000000000000000000-None]
+FAILED testing/lab10/test_regression.py::test_bug01_huge_identifier_does_not_cause_500[post-/api/requests-payload6]
+FAILED testing/lab10/test_regression.py::test_bug01_huge_identifier_does_not_cause_500[post-/api/requests-payload7]
+FAILED testing/lab10/test_regression.py::test_bug01_huge_identifier_does_not_cause_500[post-/api/requests-payload8]
+FAILED testing/lab10/test_regression.py::test_bug01_huge_identifier_does_not_cause_500[patch-/api/requests/1-payload9]
+FAILED testing/lab10/test_regression.py::test_bug01_huge_identifier_does_not_cause_500[patch-/api/requests/1-payload10]
+FAILED testing/lab10/test_regression.py::test_bug01_huge_identifier_does_not_cause_500[patch-/api/requests/1-payload11]
+FAILED testing/lab10/test_regression.py::test_bug02_search_by_long_number_returns_empty_list[9999999999999999999]
+FAILED testing/lab10/test_regression.py::test_bug02_search_by_long_number_returns_empty_list[99999999999999999999]
+FAILED testing/lab10/test_regression.py::test_bug02_search_by_long_number_returns_empty_list[#999999999999999999999999999999]
+FAILED testing/lab10/test_regression.py::test_bug02_search_by_long_number_returns_empty_list[query3]
+FAILED testing/lab10/test_regression.py::test_bug03_control_characters_are_rejected[\x00-title]
+FAILED testing/lab10/test_regression.py::test_bug03_control_characters_are_rejected[\x00-description]
+FAILED testing/lab10/test_regression.py::test_bug03_control_characters_are_rejected[\x07-title]
+FAILED testing/lab10/test_regression.py::test_bug03_control_characters_are_rejected[\x07-description]
+FAILED testing/lab10/test_regression.py::test_bug03_control_character_in_comment_is_rejected
+FAILED testing/lab10/test_regression.py::test_bug03_failed_request_leaves_db_unchanged
+FAILED testing/lab10/test_web_integration.py::test_web_page_for_huge_identifier_is_404
+======================== 24 failed, 88 passed in 1.93s ========================
