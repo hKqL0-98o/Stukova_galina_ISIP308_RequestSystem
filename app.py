@@ -11,7 +11,7 @@ from flask import Flask, jsonify, render_template, request
 from werkzeug.exceptions import HTTPException
 
 from config import Config
-from src import web
+from src import api, web
 from src.auth import load_current_user
 from src.db import close_db, init_db
 
@@ -42,6 +42,7 @@ def create_app(overrides=None):
     app.before_request(load_current_user)
     app.teardown_appcontext(close_db)
     app.register_blueprint(web.bp)
+    app.register_blueprint(api.bp)
 
     @app.errorhandler(HTTPException)
     def http_error(error):
