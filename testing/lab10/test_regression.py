@@ -1,4 +1,6 @@
 """Регрессионные тесты для дефектов, найденных в ЛР №9 (см. testing/lab9/bug_reports.md)."""
+import re
+
 import pytest
 
 from conftest import BIG_ID
@@ -71,3 +73,14 @@ def test_normal_multiline_text_is_still_allowed(client, auth):
     response = client.post("/api/requests", json={**BODY, "description": "строка 1\nстрока 2\r\n\tс отступом"},
                            headers=auth("operator"))
     assert response.status_code == 201
+
+
+# BUG-04: список «Сменить статус» предлагал по умолчанию «Новая» и позволял случайно вернуть заявку в начальный статус
+def test_bug04_status_form_has_no_default_transition(client, web_login):
+    """REG-08 (BUG-04). В форме смены статуса по умолчанию выбран пустой недоступный пункт, а не конкретный статус."""
+    web_login("operator")
+    html = client.get("/requests/2").get_data(as_text=True)       # заявка №2 в seed.sql: статус «В работе»
+    select = re.search(r'<select id="status_id"[^>]*>.*?</select>', html, re.S).group(0)
+    assert re.search(r'<option value=""\s+selected\s+disabled>', select), select
+    assert "required" in select.split(">")[0]
+    assert select.count("selected") == 1          # другого выбранного пункта нет
