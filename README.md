@@ -243,7 +243,7 @@ curl -u operator:ПАРОЛЬ -X POST http://127.0.0.1:5000/api/requests \
 
 ```bash
 pip install -r requirements-dev.txt      # Flask, waitress и pytest
-python -m pytest                         # весь набор автотестов (112 тестов), БД временная, рабочая не затрагивается
+python -m pytest                         # весь набор автотестов (113 тестов), БД временная, рабочая не затрагивается
 python testing/lab9/run_cases.py         # прогон 31 ручного кейса по HTTP против запущенного сервера (порт 5077)
 ```
 

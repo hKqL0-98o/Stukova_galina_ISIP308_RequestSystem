@@ -38,6 +38,6 @@ python -m pytest > testing/lab10/test_run.txt
 
 ## Файлы результатов
 
-- `test_run.txt` — полный вывод после исправления дефектов (112 passed).
+- `test_run.txt` — полный вывод после исправления дефектов (113 passed).
 - `test_run_before_fix.txt` — вывод до исправления (24 failed): доказательство, что тесты находят ошибки.
 - `test_summary.md` — итоговый отчёт о тестировании.
