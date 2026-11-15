@@ -1,0 +1,8 @@
+TC-01 — Просмотр списка заявок администратором
+Ожидается: HTTP 200, JSON-массив из 10 заявок
+Фактически: HTTP 200, заявок: 10
+Статус: PASS
+
+> GET /api/requests   [admin]
+< HTTP 200
+< [{"id":10,"title":"Залипает клавиатура","description":"Пролили сладкий чай на пробел","priority":"Низкий","status_id":2,"status":"В работе","category_id":3,"category":"Оборудование","applicant_id":6,"applicant":"Елена Соколова","executor_id":3,"executor":"Петр Техников","created_at":"2026-11-15 14:12:19","updated_at":"2026-11-15 14:12:19"},{"id":9,"title":"Не работает антивирус","description":"Программа не запускается после обновления","priority":"Высокий","status_id":3,"status":"Выполнена","category_id":2,"category":"Программное обеспечение","applicant_id":5,"applicant":"Иван Иванов","executo

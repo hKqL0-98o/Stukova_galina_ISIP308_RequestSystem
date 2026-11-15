@@ -1,0 +1,9 @@
+TC-27 — POST с телом не в формате JSON
+Ожидается: HTTP 415
+Фактически: HTTP 415
+Статус: PASS
+
+> POST /api/requests   [operator]
+> тело: 'title=abc'
+< HTTP 415
+< {"error":{"code":"unsupported_media_type","message":"Ожидается тело запроса с Content-Type: application/json","details":{}}}

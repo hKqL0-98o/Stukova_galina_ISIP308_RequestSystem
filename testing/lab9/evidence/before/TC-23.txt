@@ -1,0 +1,16 @@
+TC-23 — Удаление заявки №5: оператором нельзя, администратором можно
+Ожидается: Оператор → 403; админ → 204; затем GET → 404
+Фактически: оператор → 403; админ → 204; повторный GET → 404
+Статус: PASS
+
+> DELETE /api/requests/5   [operator]
+< HTTP 403
+< {"error":{"code":"forbidden","message":"Удалять заявки может только администратор","details":{}}}
+
+> DELETE /api/requests/5   [admin]
+< HTTP 204
+< 
+
+> GET /api/requests/5   [admin]
+< HTTP 404
+< {"error":{"code":"not_found","message":"Заявка #5 не найдена","details":{}}}

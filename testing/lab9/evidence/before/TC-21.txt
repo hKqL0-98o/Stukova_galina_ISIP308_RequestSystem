@@ -1,0 +1,13 @@
+TC-21 — Оператор пытается закрыть заявку №3 (запрещено ТЗ, ФТ-6)
+Ожидается: HTTP 403, статус остался «Выполнена»
+Фактически: HTTP 403; статус после попытки: Выполнена
+Статус: PASS
+
+> PATCH /api/requests/3   [operator]
+> тело: {'status_id': 4}
+< HTTP 403
+< {"error":{"code":"forbidden","message":"Закрыть заявку может только заявитель (после выполнения) или администратор","details":{}}}
+
+> GET /api/requests/3   [admin]
+< HTTP 200
+< {"id":3,"title":"Нет интернета","description":"Отвалился Wi-Fi","priority":"Высокий","status_id":3,"status":"Выполнена","category_id":1,"category":"Техническая поддержка","applicant_id":6,"applicant":"Елена Соколова","executor_id":3,"executor":"Петр Техников","created_at":"2026-11-14 14:59:11","updated_at":"2026-11-14 14:59:11","comments":[{"id":2,"request_id":3,"author_id":6,"author":"Елена Соколова","author_role":"Заявитель","content":"Уже починилось само","created_at":"2026-11-14 14:59:11"}],"history":[{"id":6,"action":"Создана","old_value":null,"new_value":"Новая","created_at":"2026-11-14

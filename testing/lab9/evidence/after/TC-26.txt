@@ -1,0 +1,42 @@
+TC-26 — Заявка, созданная через API, видна на веб-странице списка
+Ожидается: Тема присутствует в HTML главной страницы
+Фактически: HTTP 200; тема на странице: True
+Статус: PASS
+
+> POST /api/requests   [operator]
+> тело: {'title': 'Заявка из API для веба', 'category_id': 3, 'priority': 'Высокий', 'applicant_id': 5}
+< HTTP 201
+< {"id":17,"title":"Заявка из API для веба","description":null,"priority":"Высокий","status_id":1,"status":"Новая","category_id":3,"category":"Оборудование","applicant_id":5,"applicant":"Иван Иванов","executor_id":null,"executor":null,"created_at":"2026-11-15 14:12:23","updated_at":"2026-11-15 14:12:23"}
+
+> POST /login
+> тело: {'login': 'admin', 'password': 'test-pass-123'}
+< HTTP 302
+< <!doctype html>
+<html lang=en>
+<title>Redirecting...</title>
+<h1>Redirecting...</h1>
+<p>You should be redirected automatically to the target URL: <a href="/">/</a>. If not, click the link.
+
+> GET /
+< HTTP 200
+< <!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Заявки — HelpDesk</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<header class="topbar">
+    <a class="logo" href="/"><span class="logo-icon">🎧</span> HelpDesk</a>
+    <nav class="topnav">
+        <a href="/">Заявки</a>
+        <a href="/docs" target="_blank" rel="noopener">API</a>
+        
+        <a class="btn" href="/requests/new">+ Создать заявку</a>
+        
+    </nav>
+    <div class="user">
+        <span class

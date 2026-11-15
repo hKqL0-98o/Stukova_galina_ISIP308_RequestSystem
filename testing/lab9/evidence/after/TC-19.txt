@@ -1,0 +1,8 @@
+TC-19 — Запрос к API без авторизации
+Ожидается: HTTP 401
+Фактически: HTTP 401
+Статус: PASS
+
+> GET /api/requests
+< HTTP 401
+< {"error":{"code":"unauthorized","message":"Требуется авторизация: HTTP Basic (логин и пароль) или вход через веб-интерфейс","details":{}}}

@@ -1,0 +1,42 @@
+TC-30 — HTML в теме заявки не исполняется (экранирование)
+Ожидается: На странице тема выведена как текст: &lt;script&gt;
+Фактически: экранировано: True; сырой тег на странице: False
+Статус: PASS
+
+> POST /api/requests   [operator]
+> тело: {'title': '<script>alert(1)</script>', 'category_id': 3, 'priority': 'Высокий', 'applicant_id': 5}
+< HTTP 201
+< {"id":18,"title":"<script>alert(1)</script>","description":null,"priority":"Высокий","status_id":1,"status":"Новая","category_id":3,"category":"Оборудование","applicant_id":5,"applicant":"Иван Иванов","executor_id":null,"executor":null,"created_at":"2026-11-15 14:12:24","updated_at":"2026-11-15 14:12:24"}
+
+> POST /login
+> тело: {'login': 'admin', 'password': 'test-pass-123'}
+< HTTP 302
+< <!doctype html>
+<html lang=en>
+<title>Redirecting...</title>
+<h1>Redirecting...</h1>
+<p>You should be redirected automatically to the target URL: <a href="/">/</a>. If not, click the link.
+
+> GET /
+< HTTP 200
+< <!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Заявки — HelpDesk</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<header class="topbar">
+    <a class="logo" href="/"><span class="logo-icon">🎧</span> HelpDesk</a>
+    <nav class="topnav">
+        <a href="/">Заявки</a>
+        <a href="/docs" target="_blank" rel="noopener">API</a>
+        
+        <a class="btn" href="/requests/new">+ Создать заявку</a>
+        
+    </nav>
+    <div class="user">
+        <span class
