@@ -1,0 +1,9 @@
+{% macro status_badge(name) -%}
+{%- set classes = {'Новая': 'new', 'В работе': 'progress', 'Выполнена': 'done', 'Закрыта': 'closed'} -%}
+<span class="badge badge-{{ classes.get(name, 'closed') }}">{{ name }}</span>
+{%- endmacro %}
+
+{% macro priority_label(name) -%}
+{%- set classes = {'Низкий': 'low', 'Средний': 'mid', 'Высокий': 'high'} -%}
+<span class="prio prio-{{ classes.get(name, 'mid') }}">● {{ name }}</span>
+{%- endmacro %}

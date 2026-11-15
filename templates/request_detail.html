@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% from "macros.html" import status_badge, priority_label %}
+{% block title %}Заявка #{{ req.id }}{% endblock %}
+{% block content %}
+<a class="back" href="{{ url_for('web.index') }}">← Все заявки</a>
+<div class="page-head">
+    <div>
+        <h1>Заявка #{{ req.id }} — {{ req.title }} {{ status_badge(req.status) }}</h1>
+        <p class="muted small">Создана {{ req.created_at }} · Последнее обновление {{ req.updated_at }}</p>
+    </div>
+    <div class="head-actions">
+        {% if perms.can_edit %}
+        <a class="btn btn-secondary" href="{{ url_for('web.edit_request', request_id=req.id) }}">✎ Редактировать</a>
+        {% endif %}
+        {% if perms.can_delete %}
+        <form method="post" action="{{ url_for('web.delete_request', request_id=req.id) }}"
+              onsubmit="return confirm('Удалить заявку #{{ req.id }}? Комментарии и история тоже будут удалены без возможности восстановления.');">
+            <button type="submit" class="btn btn-danger">🗑 Удалить</button>
+        </form>
+        {% endif %}
+    </div>
+</div>
+
+<div class="detail-grid">
+    <div>
+        <div class="card">
+            <h2>Описание</h2>
+            {% if req.description %}<p class="pre">{{ req.description }}</p>
+            {% else %}<p class="muted">Описание не заполнено.</p>{% endif %}
+        </div>
+
+        <div class="card">
+            <h2>История изменений</h2>
+            <ul class="timeline">
+                {% for h in req.history %}
+                <li>
+                    <div><b>{{ h.action }}</b>
+                        {%- if h.action == 'Изменена' %}: {{ h.new_value }}
+                        {%- elif h.old_value %}: {{ h.old_value }} → {{ h.new_value }}
+                        {%- elif h.new_value %}: {{ h.new_value }}{% endif %}
+                    </div>
+                    <div class="muted small">{{ h.user }} ({{ h.user_role }}) · {{ h.created_at }}</div>
+                </li>
+                {% else %}
+                <li class="muted">Записей нет.</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="card" id="comments">
+            <h2>Комментарии <span class="muted">{{ req.comments|length }}</span></h2>
+            {% for c in req.comments %}
+            <div class="comment {{ 'comment-own' if c.author_id == g.user.id }}">
+                <div class="small"><b>{{ c.author }}</b> <span class="muted">{{ c.author_role }} · {{ c.created_at }}</span></div>
+                <div class="pre">{{ c.content }}</div>
+            </div>
+            {% else %}
+            <p class="muted">Комментариев пока нет.</p>
+            {% endfor %}
+            {% if perms.can_comment %}
+            <form method="post" action="{{ url_for('web.add_comment', request_id=req.id) }}" class="comment-form">
+                <textarea name="content" rows="3" maxlength="1000" required placeholder="Напишите комментарий…"></textarea>
+                <button type="submit" class="btn">Отправить</button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+
+    <aside>
+        <div class="card">
+            <h2>Управление заявкой</h2>
+            {% if perms.allowed_statuses %}
+            <form method="post" action="{{ url_for('web.change_status', request_id=req.id) }}" class="form-group">
+                <label for="status_id">Сменить статус</label>
+                <div class="inline">
+                    <select id="status_id" name="status_id">
+                        {% for s in perms.allowed_statuses %}<option value="{{ s.id }}">{{ s.name }}</option>{% endfor %}
+                    </select>
+                    <button type="submit" class="btn">ОК</button>
+                </div>
+            </form>
+            {% else %}
+            <p class="muted small">Изменение статуса для вашей роли сейчас недоступно.</p>
+            {% endif %}
+
+            {% if perms.can_assign %}
+            <form method="post" action="{{ url_for('web.change_executor', request_id=req.id) }}" class="form-group">
+                <label for="executor_id">Назначить исполнителя</label>
+                <div class="inline">
+                    <select id="executor_id" name="executor_id">
+                        <option value="">Не назначен</option>
+                        {% for u in executors %}
+                        <option value="{{ u.id }}" {{ 'selected' if req.executor_id == u.id }}>{{ u.fio }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit" class="btn">ОК</button>
+                </div>
+            </form>
+            {% endif %}
+        </div>
+        <div class="card params">
+            <div><span class="muted small">Заявитель</span><div>{{ req.applicant }}</div></div>
+            <div><span class="muted small">Исполнитель</span><div>{{ req.executor or 'Не назначен' }}</div></div>
+            <div><span class="muted small">Приоритет</span><div>{{ priority_label(req.priority) }}</div></div>
+            <div><span class="muted small">Категория</span><div>{{ req.category }}</div></div>
+        </div>
+    </aside>
+</div>
+{% endblock %}

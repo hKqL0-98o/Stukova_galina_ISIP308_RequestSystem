@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% from "macros.html" import status_badge, priority_label %}
+{% block title %}Заявки{% endblock %}
+{% block content %}
+<div class="page-head">
+    <div>
+        <h1>Заявки</h1>
+        <p class="muted">
+            {% if g.user.role == 'Заявитель' %}Ваши обращения в поддержку
+            {% elif g.user.role == 'Исполнитель' %}Заявки, назначенные вам
+            {% else %}Все обращения в поддержку{% endif %}
+        </p>
+    </div>
+</div>
+
+<div class="card">
+    <form method="get" class="filters">
+        <input type="search" name="search" value="{{ filters.search or '' }}" maxlength="100"
+               placeholder="Поиск по номеру, теме или описанию" class="grow">
+        <select name="status_id" aria-label="Статус">
+            <option value="">Все статусы</option>
+            {% for s in statuses %}
+            <option value="{{ s.id }}" {{ 'selected' if filters.status_id == s.id|string }}>{{ s.name }}</option>
+            {% endfor %}
+        </select>
+        <select name="category_id" aria-label="Категория">
+            <option value="">Все категории</option>
+            {% for c in categories %}
+            <option value="{{ c.id }}" {{ 'selected' if filters.category_id == c.id|string }}>{{ c.name }}</option>
+            {% endfor %}
+        </select>
+        <select name="priority" aria-label="Приоритет">
+            <option value="">Любой приоритет</option>
+            {% for p in priorities %}
+            <option value="{{ p }}" {{ 'selected' if filters.priority == p }}>{{ p }}</option>
+            {% endfor %}
+        </select>
+        {% if g.user.role in ['Администратор', 'Оператор'] %}
+        <select name="executor_id" aria-label="Исполнитель">
+            <option value="">Все исполнители</option>
+            {% for u in executors %}
+            <option value="{{ u.id }}" {{ 'selected' if filters.executor_id == u.id|string }}>{{ u.fio }}</option>
+            {% endfor %}
+        </select>
+        {% endif %}
+        <button type="submit" class="btn">Применить</button>
+        <a href="{{ url_for('web.index') }}" class="muted">Сбросить</a>
+    </form>
+
+    {% if requests %}
+    <div class="table-wrap">
+    <table>
+        <thead>
+        <tr>
+            <th>№</th><th>Тема</th><th>Категория</th><th>Приоритет</th>
+            <th>Заявитель</th><th>Исполнитель</th><th>Статус</th><th>Создана</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for r in requests %}
+        <tr>
+            <td><a class="id-link" href="{{ url_for('web.request_detail', request_id=r.id) }}">#{{ r.id }}</a></td>
+            <td><a class="title-link" href="{{ url_for('web.request_detail', request_id=r.id) }}">{{ r.title }}</a></td>
+            <td>{{ r.category }}</td>
+            <td>{{ priority_label(r.priority) }}</td>
+            <td>{{ r.applicant }}</td>
+            <td>{% if r.executor %}{{ r.executor }}{% else %}<span class="muted">Не назначен</span>{% endif %}</td>
+            <td>{{ status_badge(r.status) }}</td>
+            <td class="muted small">{{ r.created_at }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    <p class="muted small table-footer">Найдено заявок: {{ requests|length }}</p>
+    {% else %}
+    <div class="empty">
+        <div class="empty-icon">🔍</div>
+        <h3>Ничего не найдено</h3>
+        <p class="muted">Попробуйте изменить запрос или сбросить фильтры.</p>
+        <a href="{{ url_for('web.index') }}">Сбросить фильтры</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

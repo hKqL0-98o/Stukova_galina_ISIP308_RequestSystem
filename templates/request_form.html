@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Новая заявка' if mode == 'create' else 'Редактирование заявки #' ~ request_id }}{% endblock %}
+{% block content %}
+{% if mode == 'create' %}
+<a class="back" href="{{ url_for('web.index') }}">← К списку заявок</a>
+<h1>Создание заявки</h1>
+<p class="muted">Поля, отмеченные <span class="req">*</span>, обязательны.</p>
+{% else %}
+<a class="back" href="{{ url_for('web.request_detail', request_id=request_id) }}">← К заявке #{{ request_id }}</a>
+<h1>Редактирование заявки #{{ request_id }}</h1>
+{% endif %}
+
+<div class="card">
+    <form method="post">
+        <div class="form-grid">
+            <div class="form-group full {{ 'invalid' if 'title' in errors }}">
+                <label for="title">Тема обращения <span class="req">*</span></label>
+                <input id="title" name="title" value="{{ form.title or '' }}" required
+                       minlength="{{ limits.title_min }}" maxlength="{{ limits.title_max }}"
+                       placeholder="Кратко опишите проблему">
+                <small class="muted">От {{ limits.title_min }} до {{ limits.title_max }} символов</small>
+            </div>
+            <div class="form-group {{ 'invalid' if 'category_id' in errors }}">
+                <label for="category_id">Категория <span class="req">*</span></label>
+                <select id="category_id" name="category_id" required>
+                    <option value="">Выберите категорию</option>
+                    {% for c in categories %}
+                    <option value="{{ c.id }}" {{ 'selected' if form.category_id|string == c.id|string }}>{{ c.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group {{ 'invalid' if 'priority' in errors }}">
+                <label for="priority">Приоритет</label>
+                <select id="priority" name="priority">
+                    {% for p in priorities %}
+                    <option value="{{ p }}" {{ 'selected' if form.priority == p }}>{{ p }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% if applicants is not none %}
+            <div class="form-group full {{ 'invalid' if 'applicant_id' in errors }}">
+                <label for="applicant_id">Заявитель <span class="req">*</span></label>
+                <select id="applicant_id" name="applicant_id" required>
+                    <option value="">Выберите заявителя</option>
+                    {% for u in applicants %}
+                    <option value="{{ u.id }}" {{ 'selected' if form.applicant_id|string == u.id|string }}>{{ u.fio }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% endif %}
+            <div class="form-group full {{ 'invalid' if 'description' in errors }}">
+                <label for="description">Подробное описание проблемы</label>
+                <textarea id="description" name="description" rows="5" maxlength="{{ limits.description_max }}"
+                          placeholder="Что произошло? Когда возникла проблема и что вы уже пробовали сделать?">{{ form.description or '' }}</textarea>
+            </div>
+        </div>
+        <div class="form-actions">
+            <a class="btn btn-secondary"
+               href="{{ url_for('web.index') if mode == 'create' else url_for('web.request_detail', request_id=request_id) }}">Отмена</a>
+            <button type="submit" class="btn">{{ 'Отправить заявку' if mode == 'create' else 'Сохранить изменения' }}</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
