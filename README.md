@@ -236,3 +236,15 @@ curl -u operator:ПАРОЛЬ -X POST http://127.0.0.1:5000/api/requests \
      -H "Content-Type: application/json" \
      -d '{"title": "Не работает сканер", "category_id": 3, "priority": "Высокий", "applicant_id": 5}'
 ```
+
+## Тестирование
+
+Ручные тест-кейсы, тест-план и реестр дефектов лежат в `testing/lab9/`, автоматические тесты и итоговый отчёт — в `testing/lab10/`.
+
+```bash
+pip install -r requirements-dev.txt      # Flask, waitress и pytest
+python -m pytest                         # весь набор автотестов (112 тестов), БД временная, рабочая не затрагивается
+python testing/lab9/run_cases.py         # прогон 31 ручного кейса по HTTP против запущенного сервера (порт 5077)
+```
+
+Подробности: `testing/lab10/README.md`, итоги: `testing/lab10/test_summary.md`.
