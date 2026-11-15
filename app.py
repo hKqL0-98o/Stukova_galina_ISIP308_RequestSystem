@@ -10,7 +10,7 @@ import click
 from flask import Flask, jsonify, render_template, request
 from werkzeug.exceptions import HTTPException
 
-from config import Config
+from config import INSECURE_SECRET_KEYS, Config
 from src import api, web
 from src import repositories as repo
 from src.auth import load_current_user
@@ -38,8 +38,9 @@ def create_app(overrides=None):
 
     if init_db(app.config["DATABASE"]):
         app.logger.warning("База данных создана заново из db/schema.sql и db/seed.sql: %s", app.config["DATABASE"])
-    if app.config["SECRET_KEY"] == "dev-only-change-me" and not app.config["DEBUG"]:
-        app.logger.warning("SECRET_KEY не задан: используется учебный ключ. На сервере задайте его в .env")
+    if app.config["SECRET_KEY"] in INSECURE_SECRET_KEYS and not app.config["DEBUG"]:
+        app.logger.warning("SECRET_KEY не задан или равен образцу из репозитория: ключ известен всем. "
+                           "На сервере задайте свой в .env (openssl rand -hex 32)")
 
     app.before_request(load_current_user)
     app.teardown_appcontext(close_db)
