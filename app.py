@@ -11,9 +11,10 @@ from flask import Flask, jsonify, render_template, request
 from werkzeug.exceptions import HTTPException
 
 from config import Config
-from src import web
+from src import api, web
 from src.auth import load_current_user
 from src.db import close_db, init_db
+from src.openapi import SWAGGER_HTML, build_spec
 
 HTTP_MESSAGES = {
     400: "Некорректный запрос", 401: "Требуется авторизация", 403: "Доступ запрещён",
@@ -42,6 +43,15 @@ def create_app(overrides=None):
     app.before_request(load_current_user)
     app.teardown_appcontext(close_db)
     app.register_blueprint(web.bp)
+    app.register_blueprint(api.bp)
+
+    @app.get("/docs")
+    def docs():
+        return SWAGGER_HTML
+
+    @app.get("/openapi.json")
+    def openapi():
+        return jsonify(build_spec())
 
     @app.errorhandler(HTTPException)
     def http_error(error):
