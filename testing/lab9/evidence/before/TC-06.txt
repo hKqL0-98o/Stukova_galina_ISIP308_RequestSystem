@@ -1,0 +1,13 @@
+TC-06 — Смена статуса исполнителем (заявка №2 → «Выполнена») и запись в истории
+Ожидается: HTTP 200; статус сохранён; в истории появилась запись
+Фактически: PATCH → 200; статус при повторном чтении: Выполнена; история: В работе → Выполнена
+Статус: PASS
+
+> PATCH /api/requests/2   [petrov]
+> тело: {'status_id': 3}
+< HTTP 200
+< {"id":2,"title":"Установить PyCharm","description":"Нужен для работы с Python","priority":"Средний","status_id":3,"status":"Выполнена","category_id":2,"category":"Программное обеспечение","applicant_id":5,"applicant":"Иван Иванов","executor_id":3,"executor":"Петр Техников","created_at":"2026-11-14 14:59:11","updated_at":"2026-11-14 14:59:13"}
+
+> GET /api/requests/2   [admin]
+< HTTP 200
+< {"id":2,"title":"Установить PyCharm","description":"Нужен для работы с Python","priority":"Средний","status_id":3,"status":"Выполнена","category_id":2,"category":"Программное обеспечение","applicant_id":5,"applicant":"Иван Иванов","executor_id":3,"executor":"Петр Техников","created_at":"2026-11-14 14:59:11","updated_at":"2026-11-14 14:59:13","comments":[{"id":1,"request_id":2,"author_id":3,"author":"Петр Техников","author_role":"Исполнитель","content":"Взял в работу, скоро поставлю","created_at":"2026-11-14 14:59:11"}],"history":[{"id":2,"action":"Создана","old_value":null,"new_value":"Новая",

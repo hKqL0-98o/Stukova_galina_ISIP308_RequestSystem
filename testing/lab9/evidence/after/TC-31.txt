@@ -1,0 +1,39 @@
+TC-31 — Неверный пароль в форме входа; страницы без входа
+Ожидается: 401 с сообщением; без входа — перенаправление на /login
+Фактически: неверный пароль → HTTP 401; главная без входа → HTTP 302, Location=/login?next=/
+Статус: PASS
+
+> POST /login
+> тело: {'login': 'admin', 'password': 'wrong'}
+< HTTP 401
+< <!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Вход — HelpDesk</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<main class="container">
+    
+    
+    <div class="alert alert-error">Неверный логин или пароль</div>
+    
+    
+    
+<div class="login-wrap">
+    <div class="card login-card">
+        <div class="logo"><span class="logo-icon">🎧</span> HelpDesk</div>
+        <h1>Добро пожаловать</h1>
+        <p class="muted">Войдите в систему учёта заявок.</p>
+        <fo
+
+> GET /
+< HTTP 302
+< <!doctype html>
+<html lang=en>
+<title>Redirecting...</title>
+<h1>Redirecting...</h1>
+<p>You should be redirected automatically to the target URL: <a href="/login?next=/">/login?next=/</a>. If not, click the link.

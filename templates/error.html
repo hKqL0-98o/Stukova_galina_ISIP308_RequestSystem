@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Ошибка {{ status }}{% endblock %}
+{% block content %}
+<div class="empty card">
+    <div class="empty-icon">⚠️</div>
+    <h2>Ошибка {{ status }}</h2>
+    <p>{{ message }}</p>
+    <a href="{{ url_for('web.index') if g.user else url_for('web.login') }}">Вернуться на главную</a>
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Вход{% endblock %}
+{% block content %}
+<div class="login-wrap">
+    <div class="card login-card">
+        <div class="logo"><span class="logo-icon">🎧</span> HelpDesk</div>
+        <h1>Добро пожаловать</h1>
+        <p class="muted">Войдите в систему учёта заявок.</p>
+        <form method="post">
+            <input type="hidden" name="next" value="{{ next }}">
+            <div class="form-group">
+                <label for="login">Логин</label>
+                <input id="login" name="login" value="{{ login }}" required autofocus autocomplete="username">
+            </div>
+            <div class="form-group">
+                <label for="password">Пароль</label>
+                <input id="password" name="password" type="password" required autocomplete="current-password">
+            </div>
+            <button class="btn btn-block" type="submit">Войти</button>
+        </form>
+        <div class="demo">
+            <div class="muted small">Тестовые учётные записи (пароль выдаётся преподавателю отдельно):</div>
+            <div class="demo-logins small">
+                <span><b>admin</b> — Администратор</span>
+                <span><b>operator</b> — Оператор</span>
+                <span><b>petrov</b>, <b>morozov</b> — Исполнитель</span>
+                <span><b>ivanov</b>, <b>sokolova</b> — Заявитель</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,8 @@
+TC-04 — Поиск по слову «pycharm» (регистр не важен)
+Ожидается: Найдена только заявка №2
+Фактически: HTTP 200, найдено: [2]
+Статус: PASS
+
+> GET /api/requests?search=pycharm   [admin]
+< HTTP 200
+< [{"id":2,"title":"Установить PyCharm","description":"Нужен для работы с Python","priority":"Средний","status_id":2,"status":"В работе","category_id":2,"category":"Программное обеспечение","applicant_id":5,"applicant":"Иван Иванов","executor_id":3,"executor":"Петр Техников","created_at":"2026-11-14 14:59:11","updated_at":"2026-11-14 14:59:11"}]

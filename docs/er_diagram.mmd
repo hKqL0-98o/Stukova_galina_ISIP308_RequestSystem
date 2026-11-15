@@ -1,0 +1,56 @@
+erDiagram
+    Users {
+        int id PK
+        text fio "ФИО, обязательно"
+        text login UK "логин"
+        text password_hash "хеш пароля"
+        text role "Администратор / Оператор / Исполнитель / Заявитель"
+        int is_active "1 активен, 0 заблокирован"
+        text created_at
+    }
+    Statuses {
+        int id PK
+        text name UK "Новая / В работе / Выполнена / Закрыта"
+    }
+    Categories {
+        int id PK
+        text name UK
+        text description
+    }
+    Requests {
+        int id PK "номер заявки"
+        text title "3-100 символов"
+        text description "до 2000 символов"
+        text priority "Низкий / Средний / Высокий"
+        int category_id FK
+        int status_id FK
+        int applicant_id FK "заявитель"
+        int executor_id FK "исполнитель, может быть пустым"
+        text created_at
+        text updated_at
+    }
+    Comments {
+        int id PK
+        int request_id FK
+        int author_id FK
+        text content "1-1000 символов"
+        text created_at
+    }
+    RequestHistory {
+        int id PK
+        int request_id FK
+        int user_id FK "кто изменил"
+        text action "Создана / Статус / Исполнитель / Изменена"
+        text old_value
+        text new_value
+        text created_at
+    }
+
+    Statuses       ||--o{ Requests       : "статус заявки"
+    Categories     ||--o{ Requests       : "категория заявки"
+    Users          ||--o{ Requests       : "создаёт (заявитель)"
+    Users          |o--o{ Requests       : "выполняет (исполнитель)"
+    Requests       ||--o{ Comments       : "имеет (удаляются вместе)"
+    Users          ||--o{ Comments       : "пишет"
+    Requests       ||--o{ RequestHistory : "имеет (удаляется вместе)"
+    Users          ||--o{ RequestHistory : "совершает действие"

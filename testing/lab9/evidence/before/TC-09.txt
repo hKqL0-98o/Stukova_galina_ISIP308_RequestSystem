@@ -1,0 +1,9 @@
+TC-09 — Несуществующий статус (status_id=77)
+Ожидается: HTTP 422
+Фактически: HTTP 422: Статуса с id=77 не существует
+Статус: PASS
+
+> PATCH /api/requests/1   [admin]
+> тело: {'status_id': 77}
+< HTTP 422
+< {"error":{"code":"validation_error","message":"Статуса с id=77 не существует","details":{"status_id":"not_found"}}}

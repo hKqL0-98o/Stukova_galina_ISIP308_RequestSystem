@@ -1,0 +1,9 @@
+TC-28 — POST с битым JSON
+Ожидается: HTTP 400
+Фактически: HTTP 400
+Статус: PASS
+
+> POST /api/requests   [operator]
+> тело: '{не json'
+< HTTP 400
+< {"error":{"code":"bad_request","message":"Тело запроса не является корректным JSON","details":{}}}
