@@ -1,0 +1,26 @@
+TC-25 — Смена статуса через веб-форму (заявка №7 → «Выполнена») и проверка через API
+Ожидается: Форма → 302; API показывает новый статус
+Фактически: форма → HTTP 302; статус через API: Выполнена
+Статус: PASS
+
+> POST /login
+> тело: {'login': 'operator', 'password': 'test-pass-123'}
+< HTTP 302
+< <!doctype html>
+<html lang=en>
+<title>Redirecting...</title>
+<h1>Redirecting...</h1>
+<p>You should be redirected automatically to the target URL: <a href="/">/</a>. If not, click the link.
+
+> POST /requests/7/status
+> тело: {'status_id': '3'}
+< HTTP 302
+< <!doctype html>
+<html lang=en>
+<title>Redirecting...</title>
+<h1>Redirecting...</h1>
+<p>You should be redirected automatically to the target URL: <a href="/requests/7">/requests/7</a>. If not, click the link.
+
+> GET /api/requests/7   [admin]
+< HTTP 200
+< {"id":7,"title":"Обновить Windows","description":"Появляется синий экран раз в день","priority":"Средний","status_id":3,"status":"Выполнена","category_id":2,"category":"Программное обеспечение","applicant_id":6,"applicant":"Елена Соколова","executor_id":4,"executor":"Алексей Морозов","created_at":"2026-11-14 14:59:11","updated_at":"2026-11-14 14:59:16","comments":[],"history":[{"id":8,"action":"Создана","old_value":null,"new_value":"Новая","created_at":"2026-11-14 14:59:11","user_id":6,"user":"Елена Соколова","user_role":"Заявитель"},{"id":15,"action":"Исполнитель","old_value":"Не назначен","n
