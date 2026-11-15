@@ -4,6 +4,10 @@ import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
+# Значения, которые лежат в общедоступном репозитории (в коде и в .env.example), на сервере их использовать нельзя
+INSECURE_SECRET_KEYS = ("dev-only-change-me", "замените-на-длинную-случайную-строку")
+
+
 class Config:
     # Ключ для подписи сессий. На сервере обязательно задать свой через SECRET_KEY.
     SECRET_KEY = os.environ.get("SECRET_KEY", "dev-only-change-me")

@@ -1,0 +1,21 @@
+# Что не попадает в образ Docker
+.git/
+.gitignore
+.env
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.vscode/
+.idea/
+*.db
+*.db-journal
+*.log
+Dockerfile
+docker-compose.yml
+.dockerignore
+docs/
+testing/
+pytest.ini
+requirements-dev.txt
