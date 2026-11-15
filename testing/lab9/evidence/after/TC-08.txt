@@ -1,0 +1,9 @@
+TC-08 — Недопустимый приоритет «Срочно»
+Ожидается: HTTP 422
+Фактически: HTTP 422: Приоритет должен быть одним из: Низкий, Средний, Высокий
+Статус: PASS
+
+> POST /api/requests   [operator]
+> тело: {'title': 'Не работает сканер', 'category_id': 3, 'priority': 'Срочно', 'applicant_id': 5}
+< HTTP 422
+< {"error":{"code":"validation_error","message":"Приоритет должен быть одним из: Низкий, Средний, Высокий","details":{"priority":"invalid_choice"}}}

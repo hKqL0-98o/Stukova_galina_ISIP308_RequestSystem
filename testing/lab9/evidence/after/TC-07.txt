@@ -1,0 +1,17 @@
+TC-07 — Создание заявки с пустой темой
+Ожидается: HTTP 422, код validation_error, заявка не создана
+Фактически: HTTP 422, заявок до запроса: 11, после: 11
+Статус: PASS
+
+> GET /api/requests   [admin]
+< HTTP 200
+< [{"id":11,"title":"Не работает сканер","description":null,"priority":"Высокий","status_id":1,"status":"Новая","category_id":3,"category":"Оборудование","applicant_id":5,"applicant":"Иван Иванов","executor_id":null,"executor":null,"created_at":"2026-11-15 14:12:20","updated_at":"2026-11-15 14:12:20"},{"id":10,"title":"Залипает клавиатура","description":"Пролили сладкий чай на пробел","priority":"Низкий","status_id":2,"status":"В работе","category_id":3,"category":"Оборудование","applicant_id":6,"applicant":"Елена Соколова","executor_id":3,"executor":"Петр Техников","created_at":"2026-11-15 14:1
+
+> POST /api/requests   [operator]
+> тело: {'title': '', 'category_id': 3, 'priority': 'Высокий', 'applicant_id': 5}
+< HTTP 422
+< {"error":{"code":"validation_error","message":"Поле «Тема» обязательно","details":{"title":"required"}}}
+
+> GET /api/requests   [admin]
+< HTTP 200
+< [{"id":11,"title":"Не работает сканер","description":null,"priority":"Высокий","status_id":1,"status":"Новая","category_id":3,"category":"Оборудование","applicant_id":5,"applicant":"Иван Иванов","executor_id":null,"executor":null,"created_at":"2026-11-15 14:12:20","updated_at":"2026-11-15 14:12:20"},{"id":10,"title":"Залипает клавиатура","description":"Пролили сладкий чай на пробел","priority":"Низкий","status_id":2,"status":"В работе","category_id":3,"category":"Оборудование","applicant_id":6,"applicant":"Елена Соколова","executor_id":3,"executor":"Петр Техников","created_at":"2026-11-15 14:1

@@ -1,0 +1,13 @@
+TC-16 — Специальные символы и SQL-инъекция в теме
+Ожидается: Текст сохранён как есть, таблицы целы
+Фактически: HTTP 201; тема сохранена без изменений: True; список читается: HTTP 200
+Статус: PASS
+
+> POST /api/requests   [operator]
+> тело: {'title': 'x\'); DROP TABLE Requests;-- <b>"q"</b>', 'category_id': 3, 'priority': 'Высокий', 'applicant_id': 5}
+< HTTP 201
+< {"id":15,"title":"x'); DROP TABLE Requests;-- <b>\"q\"</b>","description":null,"priority":"Высокий","status_id":1,"status":"Новая","category_id":3,"category":"Оборудование","applicant_id":5,"applicant":"Иван Иванов","executor_id":null,"executor":null,"created_at":"2026-11-15 14:12:22","updated_at":"2026-11-15 14:12:22"}
+
+> GET /api/requests   [admin]
+< HTTP 200
+< [{"id":15,"title":"x'); DROP TABLE Requests;-- <b>\"q\"</b>","description":null,"priority":"Высокий","status_id":1,"status":"Новая","category_id":3,"category":"Оборудование","applicant_id":5,"applicant":"Иван Иванов","executor_id":null,"executor":null,"created_at":"2026-11-15 14:12:22","updated_at":"2026-11-15 14:12:22"},{"id":14,"title":"Не работает сканер","description":"бббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббббб
