@@ -32,12 +32,14 @@ python -m pytest > testing/lab10/test_run.txt
 | `test_validation.py` | валидация, граничные значения, негативные сценарии |
 | `test_api.py` | REST API: коды ответов и формат ошибок |
 | `test_web_integration.py` | веб-формы и сохранение в БД |
-| `test_regression.py` | регрессия по дефектам BUG-01…BUG-03 |
+| `test_regression.py` | регрессия по дефектам BUG-01…BUG-04 |
+| `test_login_rate_limit.py` | защита от подбора пароля (429, Retry-After), 8 тестов RL-01…RL-08 |
 
 Идентификаторы `AT-xx` и `REG-xx` в описаниях тестов соответствуют `test_summary.md`.
 
 ## Файлы результатов
 
-- `test_run.txt` — полный вывод после исправления дефектов (113 passed).
+- `test_run.txt` — полный вывод после последних изменений (121 passed).
+- `test_run_rate_limit_before_fix.txt` — тесты защиты от подбора пароля на коде без ограничения (4 failed): доказательство, что они находят отсутствие защиты.
 - `test_run_before_fix.txt` — вывод до исправления (24 failed): доказательство, что тесты находят ошибки.
 - `test_summary.md` — итоговый отчёт о тестировании.
