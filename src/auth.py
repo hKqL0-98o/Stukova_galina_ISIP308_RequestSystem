@@ -1,16 +1,27 @@
 """Аутентификация: вход по логину и паролю, сессия для интерфейса и HTTP Basic для API."""
-from flask import g, request, session
+from flask import current_app, g, request, session
+from werkzeug.exceptions import TooManyRequests
 from werkzeug.security import check_password_hash
 
 from . import repositories as repo
 
 
 def authenticate(login, password):
+    """Пользователь или None. После серии неудачных попыток бросает TooManyRequests (HTTP 429)."""
     if not login or not password:
         return None
-    user = repo.get_user_with_password(login.strip())
+    login = login.strip()
+    limiter = current_app.extensions["login_limiter"]
+    key = (request.remote_addr, login.lower())
+    wait = limiter.retry_after(key)
+    if wait:
+        raise TooManyRequests("Слишком много неудачных попыток входа. Повторите через несколько минут.",
+                              retry_after=wait)
+    user = repo.get_user_with_password(login)
     if user is None or not user["is_active"] or not check_password_hash(user["password_hash"], password):
+        limiter.fail(key)
         return None
+    limiter.reset(key)
     user.pop("password_hash")
     return user
 

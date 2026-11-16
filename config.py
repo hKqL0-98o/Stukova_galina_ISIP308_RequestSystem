@@ -16,5 +16,10 @@ class Config:
     HOST = os.environ.get("HOST", "127.0.0.1")
     PORT = int(os.environ.get("PORT", "5000"))
 
+    # Защита от подбора пароля: после LOGIN_MAX_ATTEMPTS неудачных попыток подряд вход для этой пары
+    # «адрес + логин» закрывается на LOGIN_WINDOW_SECONDS секунд. 0 отключает ограничение.
+    LOGIN_MAX_ATTEMPTS = int(os.environ.get("LOGIN_MAX_ATTEMPTS", "5"))
+    LOGIN_WINDOW_SECONDS = int(os.environ.get("LOGIN_WINDOW_SECONDS", "300"))
+
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SAMESITE = "Lax"
