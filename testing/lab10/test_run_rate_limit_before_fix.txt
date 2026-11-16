@@ -1,0 +1,63 @@
+﻿# Тесты защиты от подбора пароля на коде БЕЗ ограничения (LOGIN_MAX_ATTEMPTS=0, как до исправления)
+# Команда: set LOGIN_MAX_ATTEMPTS=0 && python -m pytest testing/lab10/test_login_rate_limit.py -v
+# Дата: 2026-11-16
+
+============================= test session starts =============================
+platform win32 -- Python 3.14.0, pytest-9.2.0, pluggy-1.7.0 -- C:\Users\User\AppData\Local\Programs\Python\Python314\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\User\Documents\GitHub\Stukova_galina_ISIP308_RequestSystem
+configfile: pytest.ini
+collecting ... collected 8 items
+
+testing/lab10/test_login_rate_limit.py::test_api_blocks_after_max_failed_attempts FAILED [ 12%]
+testing/lab10/test_login_rate_limit.py::test_correct_password_is_also_blocked_during_lock FAILED [ 25%]
+testing/lab10/test_login_rate_limit.py::test_other_login_is_not_affected PASSED [ 37%]
+testing/lab10/test_login_rate_limit.py::test_successful_login_resets_counter PASSED [ 50%]
+testing/lab10/test_login_rate_limit.py::test_web_form_blocks_and_shows_message FAILED [ 62%]
+testing/lab10/test_login_rate_limit.py::test_login_is_case_insensitive_for_limit FAILED [ 75%]
+testing/lab10/test_login_rate_limit.py::test_limit_can_be_disabled PASSED [ 87%]
+testing/lab10/test_login_rate_limit.py::test_limiter_unblocks_after_window PASSED [100%]
+
+================================== FAILURES ===================================
+__________________ test_api_blocks_after_max_failed_attempts __________________
+testing\lab10\test_login_rate_limit.py:24: in test_api_blocks_after_max_failed_attempts
+    assert blocked.status_code == 429
+E   assert 401 == 429
+E    +  where 401 = <WrapperTestResponse streamed [401 UNAUTHORIZED]>.status_code
+______________ test_correct_password_is_also_blocked_during_lock ______________
+testing\lab10\test_login_rate_limit.py:32: in test_correct_password_is_also_blocked_during_lock
+    assert client.get("/api/me", headers=auth("admin")).status_code == 429
+E   AssertionError: assert 200 == 429
+E    +  where 200 = <WrapperTestResponse streamed [200 OK]>.status_code
+E    +    where <WrapperTestResponse streamed [200 OK]> = get('/api/me', headers={'Authorization': 'Basic YWRtaW46dGVzdC1wYXNzLTEyMw=='})
+E    +      where get = <FlaskClient <Flask 'app'>>.get
+E    +      and   {'Authorization': 'Basic YWRtaW46dGVzdC1wYXNzLTEyMw=='} = <function auth.<locals>.make at 0x0000015D9A389900>('admin')
+___________________ test_web_form_blocks_and_shows_message ____________________
+testing\lab10\test_login_rate_limit.py:54: in test_web_form_blocks_and_shows_message
+    assert response.status_code == 429
+E   assert 302 == 429
+E    +  where 302 = <WrapperTestResponse streamed [302 FOUND]>.status_code
+__________________ test_login_is_case_insensitive_for_limit ___________________
+testing\lab10\test_login_rate_limit.py:63: in test_login_is_case_insensitive_for_limit
+    assert client.get("/api/me", headers=auth("admin", "wrong-password")).status_code == 429
+E   AssertionError: assert 401 == 429
+E    +  where 401 = <WrapperTestResponse streamed [401 UNAUTHORIZED]>.status_code
+E    +    where <WrapperTestResponse streamed [401 UNAUTHORIZED]> = get('/api/me', headers={'Authorization': 'Basic YWRtaW46d3JvbmctcGFzc3dvcmQ='})
+E    +      where get = <FlaskClient <Flask 'app'>>.get
+E    +      and   {'Authorization': 'Basic YWRtaW46d3JvbmctcGFzc3dvcmQ='} = <function auth.<locals>.make at 0x0000015D9A3EB270>('admin', 'wrong-password')
+=========================== short test summary info ===========================
+FAILED testing/lab10/test_login_rate_limit.py::test_api_blocks_after_max_failed_attempts - assert 401 == 429
+ +  where 401 = <WrapperTestResponse streamed [401 UNAUTHORIZED]>.status_code
+FAILED testing/lab10/test_login_rate_limit.py::test_correct_password_is_also_blocked_during_lock - AssertionError: assert 200 == 429
+ +  where 200 = <WrapperTestResponse streamed [200 OK]>.status_code
+ +    where <WrapperTestResponse streamed [200 OK]> = get('/api/me', headers={'Authorization': 'Basic YWRtaW46dGVzdC1wYXNzLTEyMw=='})
+ +      where get = <FlaskClient <Flask 'app'>>.get
+ +      and   {'Authorization': 'Basic YWRtaW46dGVzdC1wYXNzLTEyMw=='} = <function auth.<locals>.make at 0x0000015D9A389900>('admin')
+FAILED testing/lab10/test_login_rate_limit.py::test_web_form_blocks_and_shows_message - assert 302 == 429
+ +  where 302 = <WrapperTestResponse streamed [302 FOUND]>.status_code
+FAILED testing/lab10/test_login_rate_limit.py::test_login_is_case_insensitive_for_limit - AssertionError: assert 401 == 429
+ +  where 401 = <WrapperTestResponse streamed [401 UNAUTHORIZED]>.status_code
+ +    where <WrapperTestResponse streamed [401 UNAUTHORIZED]> = get('/api/me', headers={'Authorization': 'Basic YWRtaW46d3JvbmctcGFzc3dvcmQ='})
+ +      where get = <FlaskClient <Flask 'app'>>.get
+ +      and   {'Authorization': 'Basic YWRtaW46d3JvbmctcGFzc3dvcmQ='} = <function auth.<locals>.make at 0x0000015D9A3EB270>('admin', 'wrong-password')
+========================= 4 failed, 4 passed in 0.40s =========================

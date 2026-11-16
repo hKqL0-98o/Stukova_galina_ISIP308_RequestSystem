@@ -7,7 +7,7 @@ import logging
 import sqlite3
 
 import click
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, make_response, render_template, request
 from werkzeug.exceptions import HTTPException
 
 from config import INSECURE_SECRET_KEYS, Config
@@ -16,11 +16,13 @@ from src import repositories as repo
 from src.auth import load_current_user
 from src.db import close_db, init_db
 from src.openapi import SWAGGER_HTML, build_spec
+from src.ratelimit import LoginLimiter
 
 HTTP_MESSAGES = {
     400: "Некорректный запрос", 401: "Требуется авторизация", 403: "Доступ запрещён",
     404: "Ресурс не найден", 405: "Метод не поддерживается для этого адреса",
     415: "Неподдерживаемый формат тела запроса",
+    429: "Слишком много неудачных попыток входа. Повторите через несколько минут.",
 }
 
 
@@ -42,6 +44,8 @@ def create_app(overrides=None):
         app.logger.warning("SECRET_KEY не задан или равен образцу из репозитория: ключ известен всем. "
                            "На сервере задайте свой в .env (openssl rand -hex 32)")
 
+    app.extensions["login_limiter"] = LoginLimiter(app.config["LOGIN_MAX_ATTEMPTS"],
+                                                   app.config["LOGIN_WINDOW_SECONDS"])
     app.before_request(load_current_user)
     app.teardown_appcontext(close_db)
     app.register_blueprint(web.bp)
@@ -68,8 +72,13 @@ def create_app(overrides=None):
         message = HTTP_MESSAGES.get(error.code, error.description)
         if _is_api():
             code = error.name.lower().replace(" ", "_")
-            return jsonify({"error": {"code": code, "message": message, "details": {}}}), error.code
-        return render_template("error.html", status=error.code, message=message), error.code
+            response = make_response(jsonify({"error": {"code": code, "message": message, "details": {}}}), error.code)
+        else:
+            response = make_response(render_template("error.html", status=error.code, message=message), error.code)
+        retry_after = getattr(error, "retry_after", None)
+        if retry_after:
+            response.headers["Retry-After"] = str(retry_after)
+        return response
 
     @app.errorhandler(sqlite3.Error)
     def database_error(error):
