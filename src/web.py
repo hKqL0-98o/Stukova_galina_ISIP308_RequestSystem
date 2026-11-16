@@ -1,7 +1,8 @@
 """Контроллеры веб-интерфейса: принимают запрос, вызывают сервис, показывают страницу."""
 from urllib.parse import urlparse
 
-from flask import Blueprint, flash, g, redirect, render_template, request, url_for
+from flask import Blueprint, flash, g, make_response, redirect, render_template, request, url_for
+from werkzeug.exceptions import TooManyRequests
 
 from . import services
 from .auth import authenticate, login_user, logout_user
@@ -46,7 +47,14 @@ def login():
         return redirect(url_for("web.index"))
     next_url = request.values.get("next", "")
     if request.method == "POST":
-        user = authenticate(request.form.get("login", ""), request.form.get("password", ""))
+        try:
+            user = authenticate(request.form.get("login", ""), request.form.get("password", ""))
+        except TooManyRequests as error:
+            flash(error.description, "error")
+            response = make_response(render_template("login.html", login=request.form.get("login", ""),
+                                                     next=next_url), 429)
+            response.headers["Retry-After"] = str(error.retry_after)
+            return response
         if user is None:
             flash("Неверный логин или пароль", "error")
             return render_template("login.html", login=request.form.get("login", ""), next=next_url), 401
