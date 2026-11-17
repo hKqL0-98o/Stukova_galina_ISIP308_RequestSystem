@@ -9,8 +9,9 @@ INSECURE_SECRET_KEYS = ("dev-only-change-me", "замените-на-длинн�
 
 
 class Config:
-    # Ключ для подписи сессий. На сервере обязательно задать свой через SECRET_KEY.
-    SECRET_KEY = os.environ.get("SECRET_KEY", "dev-only-change-me")
+    # Ключ для подписи сессий. Значения по умолчанию нет: если SECRET_KEY не задан, приложение берёт
+    # случайный ключ (см. app.py), а образцы из INSECURE_SECRET_KEYS вне отладки не принимает совсем.
+    SECRET_KEY = os.environ.get("SECRET_KEY")
     DATABASE = os.environ.get("DATABASE_PATH", os.path.join(BASE_DIR, "requests.db"))
     DEBUG = os.environ.get("FLASK_DEBUG", "0") == "1"
     HOST = os.environ.get("HOST", "127.0.0.1")
