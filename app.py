@@ -4,6 +4,7 @@
 Пересоздать базу с тестовыми данными: flask --app app init-db
 """
 import logging
+import secrets
 import sqlite3
 
 import click
@@ -30,6 +31,26 @@ def _is_api():
     return request.path.startswith("/api/")
 
 
+def _check_secret_key(app):
+    """Не даёт запустить приложение с ключом сессий, который известен всем (ЛР №8, ревью Dockerfile).
+
+    Образцы ключей лежат в открытом репозитории: с ними cookie сессии администратора подделывается за минуту.
+    Поэтому вне режима отладки и тестов такой ключ — ошибка запуска, а не предупреждение в журнале.
+    """
+    key = app.config.get("SECRET_KEY")
+    relaxed = app.config["DEBUG"] or app.config["TESTING"]
+    if key in INSECURE_SECRET_KEYS:
+        if not relaxed:
+            raise RuntimeError("SECRET_KEY равен образцу из репозитория, этот ключ известен всем. Задайте свой "
+                               "(например, openssl rand -hex 32) в .env или переменной окружения SECRET_KEY.")
+        return
+    if not key:
+        # Ключ не задан: берём случайный, его не знает никто. Минус: после перезапуска сессии входа сбросятся.
+        app.config["SECRET_KEY"] = secrets.token_hex(32)
+        app.logger.warning("SECRET_KEY не задан: использован случайный ключ, после перезапуска все сессии "
+                           "входа сбросятся. На сервере задайте постоянный ключ (openssl rand -hex 32).")
+
+
 def create_app(overrides=None):
     app = Flask(__name__)
     app.config.from_object(Config)
@@ -40,9 +61,7 @@ def create_app(overrides=None):
 
     if init_db(app.config["DATABASE"]):
         app.logger.warning("База данных создана заново из db/schema.sql и db/seed.sql: %s", app.config["DATABASE"])
-    if app.config["SECRET_KEY"] in INSECURE_SECRET_KEYS and not app.config["DEBUG"]:
-        app.logger.warning("SECRET_KEY не задан или равен образцу из репозитория: ключ известен всем. "
-                           "На сервере задайте свой в .env (openssl rand -hex 32)")
+    _check_secret_key(app)
 
     app.extensions["login_limiter"] = LoginLimiter(app.config["LOGIN_MAX_ATTEMPTS"],
                                                    app.config["LOGIN_WINDOW_SECONDS"])
