@@ -1,0 +1,30 @@
+# Тесты порядка статусов (BUG-05) на коде ДО исправления (6 из 12 ожидаемо падают)
+# Команда: python -m pytest testing/lab10/test_status_transitions.py
+# Дата: 2026-11-17
+============================= test session starts =============================
+platform win32 -- Python 3.14.0, pytest-9.2.0, pluggy-1.7.0 -- C:\Users\User\AppData\Local\Programs\Python\Python314\python.exe
+rootdir: C:\Users\User\Documents\GitHub\Stukova_galina_ISIP308_RequestSystem
+configfile: pytest.ini
+collecting ... collected 12 items
+
+testing/lab10/test_status_transitions.py::test_executor_cannot_skip_in_progress FAILED [  8%]
+testing/lab10/test_status_transitions.py::test_operator_cannot_skip_in_progress FAILED [ 16%]
+testing/lab10/test_status_transitions.py::test_executor_cannot_roll_back FAILED [ 25%]
+testing/lab10/test_status_transitions.py::test_operator_cannot_roll_back_to_new FAILED [ 33%]
+testing/lab10/test_status_transitions.py::test_sequence_forward_works_for_all_roles PASSED [ 41%]
+testing/lab10/test_status_transitions.py::test_admin_may_make_any_transition[1-3] PASSED [ 50%]
+testing/lab10/test_status_transitions.py::test_admin_may_make_any_transition[3-1] PASSED [ 58%]
+testing/lab10/test_status_transitions.py::test_admin_may_make_any_transition[4-2] PASSED [ 66%]
+testing/lab10/test_status_transitions.py::test_admin_may_make_any_transition[2-1] PASSED [ 75%]
+testing/lab10/test_status_transitions.py::test_same_status_is_not_an_error PASSED [ 83%]
+testing/lab10/test_status_transitions.py::test_rejected_transition_changes_nothing FAILED [ 91%]
+testing/lab10/test_status_transitions.py::test_ui_offers_only_the_next_status FAILED [100%]
+
+=========================== short test summary info ===========================
+FAILED testing/lab10/test_status_transitions.py::test_executor_cannot_skip_in_progress
+FAILED testing/lab10/test_status_transitions.py::test_operator_cannot_skip_in_progress
+FAILED testing/lab10/test_status_transitions.py::test_executor_cannot_roll_back
+FAILED testing/lab10/test_status_transitions.py::test_operator_cannot_roll_back_to_new
+FAILED testing/lab10/test_status_transitions.py::test_rejected_transition_changes_nothing
+FAILED testing/lab10/test_status_transitions.py::test_ui_offers_only_the_next_status
+========================= 6 failed, 6 passed in 0.54s =========================
