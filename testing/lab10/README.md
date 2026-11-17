@@ -34,12 +34,15 @@ python -m pytest > testing/lab10/test_run.txt
 | `test_web_integration.py` | веб-формы и сохранение в БД |
 | `test_regression.py` | регрессия по дефектам BUG-01…BUG-04 |
 | `test_login_rate_limit.py` | защита от подбора пароля (429, Retry-After), 8 тестов RL-01…RL-08 |
+| `test_secret_key.py` | обязательный `SECRET_KEY`: отказ запуска с ключом-образцом, 9 тестов SK-01…SK-06 |
+| `test_status_transitions.py` | порядок статусов (BUG-05): только шаг вперёд для оператора и исполнителя, админ любой переход, 12 тестов ST |
 
 Идентификаторы `AT-xx` и `REG-xx` в описаниях тестов соответствуют `test_summary.md`.
 
 ## Файлы результатов
 
-- `test_run.txt` — полный вывод после последних изменений (121 passed).
+- `test_run.txt` — полный вывод после последних изменений (142 passed).
 - `test_run_rate_limit_before_fix.txt` — тесты защиты от подбора пароля на коде без ограничения (4 failed): доказательство, что они находят отсутствие защиты.
+- `test_run_bug04_before_fix.txt`, `test_run_bug05_before_fix.txt` — регрессионные тесты BUG-04 и BUG-05 на коде до исправления.
 - `test_run_before_fix.txt` — вывод до исправления (24 failed): доказательство, что тесты находят ошибки.
 - `test_summary.md` — итоговый отчёт о тестировании.
