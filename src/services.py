@@ -16,6 +16,8 @@ ROLES = (ADMIN, OPERATOR, EXECUTOR, APPLICANT)
 # Статусы
 NEW, IN_PROGRESS, DONE, CLOSED = "Новая", "В работе", "Выполнена", "Закрыта"
 STATUSES_NEED_EXECUTOR = (IN_PROGRESS, DONE, CLOSED)
+# Порядок статусов (ТЗ, критерий приёмки 3: «последовательно»). Ключ: текущий статус, значение: единственный допустимый следующий.
+NEXT_STATUS = {NEW: IN_PROGRESS, IN_PROGRESS: DONE, DONE: CLOSED}
 
 PRIORITIES = ("Низкий", "Средний", "Высокий")
 DEFAULT_PRIORITY = "Средний"
@@ -178,10 +180,27 @@ def status_denied_reason(user, req, new_status):
     return None  # оператор и назначенный исполнитель
 
 
+def status_transition_error(user, req, new_status):
+    """Нарушение порядка статусов (BUG-05): оператор и исполнитель двигают заявку только вперёд на один шаг.
+
+    Администратор может любой переход (в том числе откат и переоткрытие закрытой заявки). Права на закрытие
+    проверяет status_denied_reason, эта функция вызывается после неё.
+    """
+    current = req["status"]
+    if new_status == current or user["role"] == ADMIN or NEXT_STATUS.get(current) == new_status:
+        return None
+    if current == DONE:
+        return "Из статуса «Выполнена» заявку может перевести только заявитель (в «Закрыта») или администратор"
+    if current in NEXT_STATUS:
+        return f"Статусы меняются последовательно: из «{current}» можно перейти только в «{NEXT_STATUS[current]}»"
+    return None
+
+
 def permissions(user, req):
     """Что пользователь может делать с заявкой. Используется интерфейсом, чтобы скрывать лишние кнопки."""
     allowed_statuses = [s for s in repo.list_statuses()
-                        if s["name"] != req["status"] and status_denied_reason(user, req, s["name"]) is None]
+                        if s["name"] != req["status"] and status_denied_reason(user, req, s["name"]) is None
+                        and status_transition_error(user, req, s["name"]) is None]
     return {
         "can_edit": edit_denied_reason(user, req) is None,
         "can_assign": assign_denied_reason(user, req) is None,
@@ -313,6 +332,9 @@ def update_request(user, request_id, data):
         reason = status_denied_reason(user, req, status["name"])
         if reason:
             raise Forbidden(reason)
+        order_error = status_transition_error(user, req, status["name"])
+        if order_error:
+            raise ValidationError(order_error, {"status_id": "invalid_transition"})
         if status["id"] != req["status_id"]:
             changes["status_id"] = status["id"]
             history.append(("Статус", req["status"], status["name"]))
