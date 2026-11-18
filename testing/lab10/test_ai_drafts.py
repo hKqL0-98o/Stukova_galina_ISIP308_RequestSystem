@@ -162,3 +162,14 @@ def test_post_cyrillic_and_emoji_survive_roundtrip(client, auth):
     created = client.post("/api/requests", json={**BODY, "title": title}, headers=auth("operator")).get_json()
     again = client.get(f"/api/requests/{created['id']}", headers=auth("admin")).get_json()
     assert again["title"] == title
+
+
+# ---------- D. Граница идентификатора SQLite (по разбору лога, ЛР №10, запись 2) ----------
+
+@pytest.mark.parametrize("number", [2 ** 63 - 1, 2 ** 63, 10 ** 25])
+def test_integer_boundary_gives_4xx_not_500(client, auth, number):
+    """AI-16. Наибольшее число, которое помещается в SQLite INTEGER (2**63-1), и числа больше него:
+    в пути → 404, в теле запроса → 422, но никогда не 500 (OverflowError, BUG-01)."""
+    assert client.get(f"/api/requests/{number}", headers=auth("admin")).status_code == 404
+    body = {"title": "Тема заявки", "category_id": 1, "applicant_id": number}
+    assert client.post("/api/requests", json=body, headers=auth("operator")).status_code == 422
