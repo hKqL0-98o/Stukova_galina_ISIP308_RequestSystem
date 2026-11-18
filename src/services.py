@@ -31,6 +31,7 @@ TITLE_MIN, TITLE_MAX = 3, 100
 DESCRIPTION_MAX = 2000
 COMMENT_MAX = 1000
 SEARCH_MAX = 100
+PER_PAGE_DEFAULT, PER_PAGE_MAX, PAGE_MAX = 10, 100, 1_000_000
 
 CREATE_FIELDS = {"title", "description", "category_id", "priority", "applicant_id"}
 UPDATE_FIELDS = {"title", "description", "category_id", "priority", "status_id", "executor_id"}
@@ -216,7 +217,19 @@ def can_create(user):
 
 # ---------- Заявки ----------
 
-def list_requests(user, filters):
+def _parse_page_param(value, field, default, maximum):
+    """page и per_page: целое от 1 до maximum; пусто → значение по умолчанию; иначе 422."""
+    if value is None or (isinstance(value, str) and not value.strip()):
+        return default
+    if isinstance(value, str):
+        text = value.strip()
+        if text.isascii() and text.isdigit() and len(text) <= 9 and 1 <= int(text) <= maximum:
+            return int(text)
+    raise ValidationError(f"Параметр {field} должен быть целым числом от 1 до {maximum}",
+                          {field: f"integer_range:1-{maximum}"})
+
+
+def _list_criteria(user, filters):
     search = filters.get("search")
     search = search.strip()[:SEARCH_MAX] if isinstance(search, str) else ""
     criteria = {
@@ -230,7 +243,22 @@ def list_requests(user, filters):
         criteria["applicant_id"] = user["id"]        # заявитель видит только свои заявки
     elif user["role"] == EXECUTOR:
         criteria["executor_id"] = user["id"]         # исполнитель видит только назначенные ему
-    return repo.find_requests(**criteria)
+    return criteria
+
+
+def list_requests(user, filters):
+    return repo.find_requests(**_list_criteria(user, filters))
+
+
+def list_requests_page(user, filters):
+    """Одна страница списка. Критерии (фильтры и права роли) общие для выборки и подсчёта."""
+    page = _parse_page_param(filters.get("page"), "page", 1, PAGE_MAX)
+    per_page = _parse_page_param(filters.get("per_page"), "per_page", PER_PAGE_DEFAULT, PER_PAGE_MAX)
+    criteria = _list_criteria(user, filters)
+    total = repo.count_requests(**criteria)
+    items = repo.find_requests(**criteria, limit=per_page, offset=(page - 1) * per_page)
+    return {"items": items, "page": page, "per_page": per_page, "total": total,
+            "pages": max(1, -(-total // per_page))}
 
 
 def _find_request(request_id):

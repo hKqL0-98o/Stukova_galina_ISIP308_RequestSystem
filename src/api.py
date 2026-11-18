@@ -31,7 +31,16 @@ def _json_body():
 
 @bp.get("/requests")
 def list_requests():
-    return jsonify(services.list_requests(g.user, request.args.to_dict()))
+    args = request.args.to_dict()
+    if "page" not in args and "per_page" not in args:
+        return jsonify(services.list_requests(g.user, args))      # как раньше: весь список массивом
+    result = services.list_requests_page(g.user, args)
+    response = jsonify(result["items"])                           # тело по-прежнему массив
+    response.headers["X-Total-Count"] = str(result["total"])
+    response.headers["X-Page"] = str(result["page"])
+    response.headers["X-Per-Page"] = str(result["per_page"])
+    response.headers["X-Total-Pages"] = str(result["pages"])
+    return response
 
 
 @bp.get("/requests/<int:request_id>")

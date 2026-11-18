@@ -36,9 +36,9 @@ def _escape_like(text):
 
 # ---------- Заявки ----------
 
-def find_requests(search=None, status_id=None, category_id=None, priority=None,
-                  executor_id=None, applicant_id=None):
-    sql = _REQUEST_SELECT + " WHERE 1 = 1"
+def _request_conditions(search, status_id, category_id, priority, executor_id, applicant_id):
+    """Общая часть WHERE для списка и для подсчёта: итог и страница не могут разойтись."""
+    sql = " WHERE 1 = 1"
     params = []
     if search:
         pattern = f"%{_escape_like(search.lower())}%"
@@ -56,8 +56,23 @@ def find_requests(search=None, status_id=None, category_id=None, priority=None,
         if value is not None:
             sql += f" AND {column} = ?"
             params.append(value)
-    sql += " ORDER BY r.id DESC"
+    return sql, params
+
+
+def find_requests(search=None, status_id=None, category_id=None, priority=None,
+                  executor_id=None, applicant_id=None, limit=None, offset=0):
+    where, params = _request_conditions(search, status_id, category_id, priority, executor_id, applicant_id)
+    sql = _REQUEST_SELECT + where + " ORDER BY r.id DESC"      # порядок фиксирован: новые сверху
+    if limit is not None:
+        sql += " LIMIT ? OFFSET ?"
+        params += [limit, offset]
     return _all(sql, params)
+
+
+def count_requests(search=None, status_id=None, category_id=None, priority=None,
+                   executor_id=None, applicant_id=None):
+    where, params = _request_conditions(search, status_id, category_id, priority, executor_id, applicant_id)
+    return get_db().execute("SELECT COUNT(*) FROM Requests r" + where, params).fetchone()[0]
 
 
 def get_request(request_id):
