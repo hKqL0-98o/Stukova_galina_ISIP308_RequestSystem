@@ -76,13 +76,16 @@ def logout():
 def index():
     filters = request.args.to_dict()
     try:
-        items = services.list_requests(g.user, filters)
+        pg = services.list_requests_page(g.user, filters)
     except AppError as error:
         flash(error.message, "error")
-        filters, items = {}, services.list_requests(g.user, {})
+        filters, pg = {}, services.list_requests_page(g.user, {})
+    link_args = {k: v for k, v in filters.items() if k != "page" and v}   # фильтры сохраняются в ссылках страниц
     return render_template(
         "index.html",
-        requests=items,
+        requests=pg["items"],
+        pg=pg,
+        link_args=link_args,
         filters=filters,
         statuses=services.list_statuses(),
         categories=services.list_categories(),

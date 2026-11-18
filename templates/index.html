@@ -72,12 +72,20 @@
         </tbody>
     </table>
     </div>
-    <p class="muted small table-footer">Найдено заявок: {{ requests|length }}</p>
+    <p class="muted small table-footer">Найдено заявок: {{ pg.total }}</p>
+    {% if pg.pages > 1 %}
+    <nav class="pager" aria-label="Страницы списка">
+        {% if pg.page > 1 %}<a href="{{ url_for('web.index', page=pg.page - 1, **link_args) }}">← Назад</a>{% endif %}
+        <span class="muted">Страница {{ pg.page }} из {{ pg.pages }}</span>
+        {% if pg.page < pg.pages %}<a href="{{ url_for('web.index', page=pg.page + 1, **link_args) }}">Вперёд →</a>{% endif %}
+    </nav>
+    {% endif %}
     {% else %}
     <div class="empty">
         <div class="empty-icon">🔍</div>
         <h3>Ничего не найдено</h3>
         <p class="muted">Попробуйте изменить запрос или сбросить фильтры.</p>
+        {% if pg.page > 1 %}<p class="muted small">Страница {{ pg.page }} за пределами списка (всего страниц: {{ pg.pages }}).</p>{% endif %}
         <a href="{{ url_for('web.index') }}">Сбросить фильтры</a>
     </div>
     {% endif %}

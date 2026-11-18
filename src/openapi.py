@@ -58,8 +58,16 @@ def build_spec():
                         {"name": "category_id", "in": "query", "schema": {"type": "integer"}},
                         {"name": "executor_id", "in": "query", "schema": {"type": "integer"}},
                         {"name": "priority", "in": "query", "schema": _PRIORITY},
+                        {"name": "page", "in": "query", "schema": {"type": "integer", "minimum": 1, "maximum": 1000000},
+                         "description": "Номер страницы. Если передан page или per_page, возвращается одна страница"},
+                        {"name": "per_page", "in": "query", "schema": {"type": "integer", "minimum": 1, "maximum": 100, "default": 10},
+                         "description": "Заявок на странице (по умолчанию 10, не более 100)"},
                     ],
-                    "responses": {"200": _resp("Массив заявок", array("Request")), **_errors(401, 422)},
+                    "responses": {"200": {**_resp("Массив заявок. При постраничном выводе в заголовках: "
+                                                  "X-Total-Count, X-Page, X-Per-Page, X-Total-Pages", array("Request")),
+                                          "headers": {h: {"schema": {"type": "integer"}} for h in
+                                                      ("X-Total-Count", "X-Page", "X-Per-Page", "X-Total-Pages")}},
+                                  **_errors(401, 422)},
                 },
                 "post": {
                     "tags": ["Заявки"], "summary": "Создать заявку",
